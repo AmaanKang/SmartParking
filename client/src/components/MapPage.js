@@ -22,7 +22,16 @@ function MapPage() {
     { spotId: 'B3', status: 'free', lat: 43.675396, lng: -79.633214 },
     { spotId: 'C1', status: 'occupied', lat: 43.675396, lng: -79.633214 },
     { spotId: 'C2', status: 'free', lat: 43.675396, lng: -79.633214 },
-    { spotId: 'C3', status: 'free', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'C3', status: 'occupied', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'D1', status: 'free', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'D2', status: 'free', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'D3', status: 'occupied', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'E1', status: 'free', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'E2', status: 'free', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'E3', status: 'occupied', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'F1', status: 'free', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'F2', status: 'occupied', lat: 43.675396, lng: -79.633214 },
+    { spotId: 'F3', status: 'free', lat: 43.675396, lng: -79.633214 },
     // Add more parking spots here
   ];
 
