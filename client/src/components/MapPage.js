@@ -1,29 +1,52 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, {useEffect, useState} from 'react';
+import {Stage, Layer, Rect, Text} from 'react-konva';
 
 function MapPage() {
   // TODO: Fetch the available parking spots from the server
+  /**
+   * const [parkingSpots, setParkingSpots] = useState([]);
+
+  useEffect(() => {
+    // TODO: Replace with server's URL
+    fetch('https://server.com/api/parking-spots')
+      .then(response => response.json())
+      .then(data => setParkingSpots(data));
+  }, []);
+   */
   const parkingSpots = [
-    { id: '1', lat: 51.505, lng: -0.09 },
+    { spotId: 'A1', status: 'free', lat: 43.675396, lng: -79.633214 },
     // Add more parking spots here
   ];
 
   return (
     <div>
       <h1>Parking Spots Map</h1>
-      <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: "100vh", width: "100%" }}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-        {parkingSpots.map(spot => (
-          <Marker key={spot.id} position={[spot.lat, spot.lng]}>
-            <Popup>
-              Parking Spot {spot.id}
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+      <Stage width={window.innerWidth} height={window.innerHeight}>
+        <Layer>
+          {parkingSpots.map((parkingSpot,index) => (
+            <React.Fragment key={parkingSpot.spotId}>
+            <Rect
+              x={100}
+              y={100}
+              width={100}
+              height={50}
+              fill={parkingSpot.status === 'free' ? 'green' : 'red'}
+              stroke='black'
+              strokeWidth={4}
+            />
+            <Text
+                x={50}
+                y={120}
+                text={`Spot ${parkingSpot.spotId}`}
+                fontSize={20}
+                width={200}
+                align='center'
+            />
+            </React.Fragment>
+            
+          ))}
+        </Layer>
+      </Stage>
     </div>
   );
 }

@@ -8,7 +8,9 @@ function HomePage() {
     <div>
       <h1>Welcome to Our Parking Lot</h1>
       <p>Scan the QR code below to view the parking spots map:</p>
-      <QRCode value={url} />
+      <a href={url}>
+        <QRCode value={url} />
+      </a>
     </div>
   );
 }

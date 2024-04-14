@@ -1,15 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import HomePage from './HomePage';
-import MapPage from './MapPage';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './components/HomePage.js';
+import MapPage from './components/MapPage.js';
 
 function App() {
   return (
     <Router>
-      <Switch>
-        <Route path="/" exact component={HomePage} />
-        <Route path="/map" component={MapPage} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<HomePage/>} />
+        <Route path="/map" element={<MapPage/>} />
+      </Routes>
     </Router>
   );
 }
