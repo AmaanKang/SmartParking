@@ -9,8 +9,8 @@ function MapPage() {
     const lotHeight = lotWidth / 2;
     const xMultiplier = lotWidth * 2 + lotWidth / 3;
     const xNum = lotWidth / 6;
-    const yNum = lotWidth + lotWidth / 6;
-    const yMultiplier = lotWidth - lotWidth / 6;
+    const yNum = lotWidth;
+    const yMultiplier = lotWidth / 2;
     const carPosition = {x: 400, y: 500};
     
   /**
@@ -57,12 +57,12 @@ function MapPage() {
         if(spot.status === 'free') {
             const col = spot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);
             const r = parseInt(spot.spotId.slice(1) - 1);
-            const spotPosition = {x: xNum + col * xMultiplier, y: yNum + r * yMultiplier};
-            const distance = Math.hypot(spotPosition.x - carPosition.x, spotPosition.y - carPosition.y);
+            let rightCol = spot.subColumn === 'right' ? lotWidth : 0;
+            const spotPosition = {x: xNum + col * xMultiplier + rightCol, y: yNum + r * yMultiplier};
+            const distance = Math.abs(carPosition.x - spotPosition.x) + Math.abs(carPosition.y - spotPosition.y);
             if(distance < minDistance) {
                 minDistance = distance;
                 nearest = spot;
-                console.log(nearest.spotId.toString());
             }
         }
       });

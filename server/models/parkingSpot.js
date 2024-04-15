@@ -7,4 +7,4 @@ const ParkingSpotSchema = new mongoose.Schema({
     status: {type: String, default: 'free', enum: ['free','occupied']}
 });
 
-module.exports = mongoose.model('ParkingSpot',ParkingSpotSchema);
+module.exports = mongoose.model('ParkingSpots',ParkingSpotSchema);

@@ -8,4 +8,4 @@ const SensorSchema = new mongoose.Schema({
     parkingStatus: {type: String, default: 'free', enum: ['free','occupied']}
 });
 
-module.exports = mongoose.model('Sensor', SensorSchema);
+module.exports = mongoose.model('Sensors', SensorSchema);
