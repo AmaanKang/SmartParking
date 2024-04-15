@@ -4,12 +4,8 @@ import {Stage, Layer, Rect, Text, Circle} from 'react-konva';
 function MapPage() {
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
-  // TODO: Fetch the available parking spots from the server
   /**
-   * const [parkingSpots, setParkingSpots] = useState([]);
-
   useEffect(() => {
-    // TODO: Replace with server's URL
     fetch('https://server.com/api/parking-spots')
       .then(response => response.json())
       .then(data => setParkingSpots(data));
@@ -39,6 +35,7 @@ function MapPage() {
       ];
       setParkingSpots(spots);
       console.log(spots.length);
+      // Find the nearest free parking spot to the car
       let nearest = null;
       let minDistance = Infinity;
       spots.forEach(spot => {
@@ -63,7 +60,6 @@ function MapPage() {
   const yMultiplier = 80;
   const carPosition = {x: 400, y: 500};
 
-
   return (
     <div>
       <h1>Parking Spots Map</h1>
@@ -85,6 +81,7 @@ function MapPage() {
             const fillColor = parkingSpot === nearestSpot ? 'green' : (parkingSpot.status === 'free' ? 'white' : 'red');
             return (
               <React.Fragment key={parkingSpot.spotId}>
+                {/* Draw the parking spots */}
                 <Rect
                   x={xNum + column * xMultiplier} // Adjust the x position based on the column
                   y={yNum + row * yMultiplier} // Adjust the y position based on the row

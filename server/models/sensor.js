@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const SensorSchema = new mongoose.Schema({
     sensorId: {type: String, required: true, unique: true},
     parkingSpot: {type: mongoose.Schema.Types.ObjectId, ref: 'ParkingSpot'},
-    status: {type: String, default: 'working', enum: ['working','not working']}
+    status: {type: String, default: 'working', enum: ['working','not working']},
+    parkingStatus: {type: String, default: 'free', enum: ['free','occupied']}
 });
 
 module.exports = mongoose.model('Sensor', SensorSchema);
