@@ -13,8 +13,7 @@ exports.getAllParkingSpots = async(req, res) => {
 // Add a new parking spot
 exports.addParkingSpot = async(req, res) => {
     const parkingSpot = new ParkingSpot({
-        spotId: req.body.spotId,
-        location: req.body.location
+        spotId: req.body.spotId
     });
 
     try{

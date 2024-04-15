@@ -4,6 +4,15 @@ import {Stage, Layer, Rect, Text, Circle} from 'react-konva';
 function MapPage() {
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
+    // All variables are dependent on the lotWidth. If the parking lot size needs to be controlled, just change lotWidth
+    const lotWidth = 80;
+    const lotHeight = lotWidth / 2;
+    const xMultiplier = lotWidth * 2 + lotWidth / 3;
+    const xNum = lotWidth / 6;
+    const yNum = lotWidth + lotWidth / 6;
+    const yMultiplier = lotWidth - lotWidth / 6;
+    const carPosition = {x: 400, y: 500};
+    
   /**
   useEffect(() => {
     fetch('https://server.com/api/parking-spots')
@@ -13,28 +22,34 @@ function MapPage() {
    */
   useEffect(() => {
     const spots = [
-        { spotId: 'A1', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'A2', status: 'occupied', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'A3', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'B1', status: 'occupied', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'B2', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'B3', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'C1', status: 'occupied', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'C2', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'C3', status: 'occupied', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'D1', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'D2', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'D3', status: 'occupied', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'E1', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'E2', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'E3', status: 'occupied', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'F1', status: 'free', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'F2', status: 'occupied', lat: 43.675396, lng: -79.633214 },
-        { spotId: 'F3', status: 'free', lat: 43.675396, lng: -79.633214 },
+        { spotId: 'A1', subColumn: 'left', status: 'free'},
+        { spotId: 'A1', subColumn: 'right', status: 'free'},
+        { spotId: 'A2', subColumn: 'left', status: 'occupied' },
+        { spotId: 'A2', subColumn: 'right', status: 'free'},
+        { spotId: 'A3', subColumn: 'left', status: 'free' },
+        { spotId: 'A3', subColumn: 'right', status: 'occupied'},
+        { spotId: 'B1', subColumn: 'left', status: 'occupied'},
+        { spotId: 'B1', subColumn: 'right', status: 'free'},
+        { spotId: 'B2', subColumn: 'left', status: 'free'},
+        { spotId: 'B2', subColumn: 'right', status: 'occupied'},
+        { spotId: 'B3', subColumn: 'left', status: 'free'},
+        { spotId: 'B3', subColumn: 'right', status: 'occupied'},
+        { spotId: 'C1', subColumn: 'left', status: 'occupied'},
+        { spotId: 'C2', subColumn: 'left', status: 'free'},
+        { spotId: 'C3', subColumn: 'left', status: 'occupied'},
+        { spotId: 'C1', subColumn: 'right', status: 'free'},
+        { spotId: 'C2', subColumn: 'right', status: 'free'},
+        { spotId: 'C3', subColumn: 'right', status: 'occupied'},
+        { spotId: 'D1', subColumn: 'left', status: 'free'},
+        { spotId: 'D2', subColumn: 'left', status: 'free'},
+        { spotId: 'D3', subColumn: 'left',status: 'occupied'},
+        { spotId: 'D1', subColumn: 'right', status: 'free'},
+        { spotId: 'D2', subColumn: 'right', status: 'occupied'},
+        { spotId: 'D3', subColumn: 'right',status: 'free'},
+        
         // Add more parking spots here
       ];
       setParkingSpots(spots);
-      console.log(spots.length);
       // Find the nearest free parking spot to the car
       let nearest = null;
       let minDistance = Infinity;
@@ -53,12 +68,7 @@ function MapPage() {
       });
       setNearestSpot(nearest);
   },[]);
-  
-  const xNum = 10;
-  const yNum = 70;
-  const xMultiplier = 130;
-  const yMultiplier = 80;
-  const carPosition = {x: 400, y: 500};
+
 
   return (
     <div>
@@ -78,24 +88,26 @@ function MapPage() {
             // Parse the spot ID to get the row and column
             const column = parkingSpot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);
             const row = parseInt(parkingSpot.spotId.slice(1)) - 1;
+            //If the current column is on right, then the lot should be drawn after left column, so adjust the x position by adding lotWidth to it.
+            let rightColumn = parkingSpot.subColumn === 'right' ? lotWidth : 0;
             const fillColor = parkingSpot === nearestSpot ? 'green' : (parkingSpot.status === 'free' ? 'white' : 'red');
             return (
-              <React.Fragment key={parkingSpot.spotId}>
+              <React.Fragment key={parkingSpot.spotId+parkingSpot.subColumn}>
                 {/* Draw the parking spots */}
                 <Rect
-                  x={xNum + column * xMultiplier} // Adjust the x position based on the column
+                  x={xNum + column * (xMultiplier) + rightColumn} // Adjust the x position based on the column
                   y={yNum + row * yMultiplier} // Adjust the y position based on the row
-                  width={100}
-                  height={50}
+                  width={lotWidth}
+                  height={lotHeight}
                   fill={fillColor}
                   stroke='black'
                   strokeWidth={4}
                 />
                 <Text
-                  x={xNum + column * xMultiplier + 10} // Adjust the x position based on the column
-                  y={yNum + row * yMultiplier + 10} // Adjust the y position based on the row
+                  x={xNum + column * (xMultiplier) + xNum + rightColumn} // Adjust the x position based on the column
+                  y={yNum + row * yMultiplier + xNum} // Adjust the y position based on the row
                   text={parkingSpot.spotId}
-                  fontSize={20}
+                  fontSize={15}
                   align='center'
                 />
               </React.Fragment>
