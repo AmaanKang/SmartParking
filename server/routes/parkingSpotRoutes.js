@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const parkingSpotController = require('../controllers/parkingSpotController');
 
+console.log("I am parking spot routes");
 // Route to get all parking spots
 router.get('/',parkingSpotController.getAllParkingSpots);
 

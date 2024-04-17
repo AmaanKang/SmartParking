@@ -42,12 +42,13 @@ function MapPage() {
         
         // Add more parking spots here
       ];*/
-
       fetch('http://localhost:3000/api/parking-spots')
       .then(response => response.json())
       .then(data => {
         setParkingSpots(data);
+        console.log(data);
       }).then(() => {
+        console.log(parkingSpots);
         // Find the nearest free parking spot to the car
         let nearest = null;
         let minDistance = Infinity;

@@ -19,7 +19,7 @@ async function run() {
     const db = client.db(dbName);
 
     // Get the parkingSpots collection
-    const collection = db.collection('ParkingSpots');
+    const collection = db.collection('parkingspots');
     console.log(collection);
 
     // Insert some parkingSpots
