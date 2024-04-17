@@ -13,15 +13,8 @@ function MapPage() {
     const yMultiplier = lotWidth / 2;
     const carPosition = {x: 400, y: 500};
     
-  /**
   useEffect(() => {
-    fetch('https://server.com/api/parking-spots')
-      .then(response => response.json())
-      .then(data => setParkingSpots(data));
-  }, []);
-   */
-  useEffect(() => {
-    const spots = [
+    /**const spots = [
         { spotId: 'A1', subColumn: 'left', status: 'free'},
         { spotId: 'A1', subColumn: 'right', status: 'free'},
         { spotId: 'A2', subColumn: 'left', status: 'occupied' },
@@ -48,25 +41,33 @@ function MapPage() {
         { spotId: 'D3', subColumn: 'right',status: 'free'},
         
         // Add more parking spots here
-      ];
-      setParkingSpots(spots);
-      // Find the nearest free parking spot to the car
-      let nearest = null;
-      let minDistance = Infinity;
-      spots.forEach(spot => {
-        if(spot.status === 'free') {
-            const col = spot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);
-            const r = parseInt(spot.spotId.slice(1) - 1);
-            let rightCol = spot.subColumn === 'right' ? lotWidth : 0;
-            const spotPosition = {x: xNum + col * xMultiplier + rightCol, y: yNum + r * yMultiplier};
-            const distance = Math.abs(carPosition.x - spotPosition.x) + Math.abs(carPosition.y - spotPosition.y);
-            if(distance < minDistance) {
-                minDistance = distance;
-                nearest = spot;
-            }
-        }
+      ];*/
+
+      fetch('http://localhost:3000/api/parking-spots')
+      .then(response => response.json())
+      .then(data => {
+        setParkingSpots(data);
+      }).then(() => {
+        // Find the nearest free parking spot to the car
+        let nearest = null;
+        let minDistance = Infinity;
+        parkingSpots.forEach(spot => {
+          if(spot.status === 'free') {
+              const col = spot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);
+              const r = parseInt(spot.spotId.slice(1) - 1);
+              let rightCol = spot.subColumn === 'right' ? lotWidth : 0;
+              const spotPosition = {x: xNum + col * xMultiplier + rightCol, y: yNum + r * yMultiplier};
+              const distance = Math.abs(carPosition.x - spotPosition.x) + Math.abs(carPosition.y - spotPosition.y);
+              if(distance < minDistance) {
+                  minDistance = distance;
+                  nearest = spot;
+              }
+          }
+        });
+        setNearestSpot(nearest);
       });
-      setNearestSpot(nearest);
+
+      //setParkingSpots(spots);
   },[]);
 
 
