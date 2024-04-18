@@ -20,36 +20,25 @@ async function run() {
 
     // Get the parkingSpots collection
     const collection = db.collection('parkingspots');
-    console.log(collection);
 
     // Insert some parkingSpots
-    const spots = [
-      { spotId: 'A1', subColumn: 'left', status: 'free'},
-          { spotId: 'A1', subColumn: 'right', status: 'free'},
-          { spotId: 'A2', subColumn: 'left', status: 'occupied' },
-          { spotId: 'A2', subColumn: 'right', status: 'free'},
-          { spotId: 'A3', subColumn: 'left', status: 'free' },
-          { spotId: 'A3', subColumn: 'right', status: 'occupied'},
-          { spotId: 'B1', subColumn: 'left', status: 'occupied'},
-          { spotId: 'B1', subColumn: 'right', status: 'free'},
-          { spotId: 'B2', subColumn: 'left', status: 'free'},
-          { spotId: 'B2', subColumn: 'right', status: 'occupied'},
-          { spotId: 'B3', subColumn: 'left', status: 'free'},
-          { spotId: 'B3', subColumn: 'right', status: 'occupied'},
-          { spotId: 'C1', subColumn: 'left', status: 'occupied'},
-          { spotId: 'C2', subColumn: 'left', status: 'free'},
-          { spotId: 'C3', subColumn: 'left', status: 'occupied'},
-          { spotId: 'C1', subColumn: 'right', status: 'free'},
-          { spotId: 'C2', subColumn: 'right', status: 'free'},
-          { spotId: 'C3', subColumn: 'right', status: 'occupied'},
-          { spotId: 'D1', subColumn: 'left', status: 'free'},
-          { spotId: 'D2', subColumn: 'left', status: 'free'},
-          { spotId: 'D3', subColumn: 'left',status: 'occupied'},
-          { spotId: 'D1', subColumn: 'right', status: 'free'},
-          { spotId: 'D2', subColumn: 'right', status: 'occupied'},
-          { spotId: 'D3', subColumn: 'right',status: 'free'},
-      // Add more parking spots here
-    ];
+    const spots = [];
+    const columns = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const rows = [1, 2, 3, 4, 5, 6, 7, 8];
+    const subColumns = ['left', 'right'];
+
+    columns.forEach(column => {
+      rows.forEach(row => {
+        subColumns.forEach(subColumn => {
+          const status = Math.random() < 0.5 ? 'free' : 'occupied';
+          spots.push({
+            spotId: `${column}${row}`,
+            status: status,
+            subColumn: subColumn
+          });
+        });
+      });
+    });
 
     // Insert the spots into the collection
     const result = await collection.insertMany(spots);

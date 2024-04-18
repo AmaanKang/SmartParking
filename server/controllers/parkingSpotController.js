@@ -5,7 +5,6 @@ exports.getAllParkingSpots = async(req, res) => {
     try{
         console.log("I am parking spot controller");
         const parkingSpots = await ParkingSpot.find();
-        console.log(parkingSpots);
         res.json(parkingSpots);
     } catch(err){
         console.log(err);

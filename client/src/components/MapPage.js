@@ -14,62 +14,32 @@ function MapPage() {
     const carPosition = {x: 400, y: 500};
     
   useEffect(() => {
-    /**const spots = [
-        { spotId: 'A1', subColumn: 'left', status: 'free'},
-        { spotId: 'A1', subColumn: 'right', status: 'free'},
-        { spotId: 'A2', subColumn: 'left', status: 'occupied' },
-        { spotId: 'A2', subColumn: 'right', status: 'free'},
-        { spotId: 'A3', subColumn: 'left', status: 'free' },
-        { spotId: 'A3', subColumn: 'right', status: 'occupied'},
-        { spotId: 'B1', subColumn: 'left', status: 'occupied'},
-        { spotId: 'B1', subColumn: 'right', status: 'free'},
-        { spotId: 'B2', subColumn: 'left', status: 'free'},
-        { spotId: 'B2', subColumn: 'right', status: 'occupied'},
-        { spotId: 'B3', subColumn: 'left', status: 'free'},
-        { spotId: 'B3', subColumn: 'right', status: 'occupied'},
-        { spotId: 'C1', subColumn: 'left', status: 'occupied'},
-        { spotId: 'C2', subColumn: 'left', status: 'free'},
-        { spotId: 'C3', subColumn: 'left', status: 'occupied'},
-        { spotId: 'C1', subColumn: 'right', status: 'free'},
-        { spotId: 'C2', subColumn: 'right', status: 'free'},
-        { spotId: 'C3', subColumn: 'right', status: 'occupied'},
-        { spotId: 'D1', subColumn: 'left', status: 'free'},
-        { spotId: 'D2', subColumn: 'left', status: 'free'},
-        { spotId: 'D3', subColumn: 'left',status: 'occupied'},
-        { spotId: 'D1', subColumn: 'right', status: 'free'},
-        { spotId: 'D2', subColumn: 'right', status: 'occupied'},
-        { spotId: 'D3', subColumn: 'right',status: 'free'},
-        
-        // Add more parking spots here
-      ];*/
       fetch('http://localhost:3000/api/parking-spots')
       .then(response => response.json())
       .then(data => {
         setParkingSpots(data);
-        console.log(data);
-      }).then(() => {
-        console.log(parkingSpots);
-        // Find the nearest free parking spot to the car
-        let nearest = null;
-        let minDistance = Infinity;
-        parkingSpots.forEach(spot => {
-          if(spot.status === 'free') {
-              const col = spot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);
-              const r = parseInt(spot.spotId.slice(1) - 1);
-              let rightCol = spot.subColumn === 'right' ? lotWidth : 0;
-              const spotPosition = {x: xNum + col * xMultiplier + rightCol, y: yNum + r * yMultiplier};
-              const distance = Math.abs(carPosition.x - spotPosition.x) + Math.abs(carPosition.y - spotPosition.y);
-              if(distance < minDistance) {
-                  minDistance = distance;
-                  nearest = spot;
-              }
-          }
-        });
-        setNearestSpot(nearest);
       });
-
-      //setParkingSpots(spots);
   },[]);
+
+  useEffect(() => {
+    // Find the nearest free parking spot to the car
+    let nearest = null;
+    let minDistance = Infinity;
+    parkingSpots.forEach(spot => {
+      if(spot.status === 'free') {
+          const col = spot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);
+          const r = parseInt(spot.spotId.slice(1) - 1);
+          let rightCol = spot.subColumn === 'right' ? lotWidth : 0;
+          const spotPosition = {x: xNum + col * xMultiplier + rightCol, y: yNum + r * yMultiplier};
+          const distance = Math.hypot(carPosition.x - spotPosition.x, carPosition.y - spotPosition.y);
+          if(distance < minDistance) {
+              minDistance = distance;
+              nearest = spot;
+          }
+      }
+    });
+    setNearestSpot(nearest);
+  },[parkingSpots]);
 
 
   return (
