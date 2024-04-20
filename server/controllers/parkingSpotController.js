@@ -26,3 +26,15 @@ exports.addParkingSpot = async(req, res) => {
     }
 };
 
+// Remove a parking spot
+exports.removeParkingSpot = async (req, res) => {
+    const removedSpot = await ParkingSpot.findByIdAndRemove(req.params.id);
+    res.json(removedSpot);
+  };
+  
+  // Update a parking spot
+  exports.updateParkingSpot = async (req, res) => {
+    const updatedSpot = await ParkingSpot.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedSpot);
+  };
+
