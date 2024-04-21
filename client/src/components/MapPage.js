@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Stage, Layer, Rect, Text, Circle} from 'react-konva';
 
-function MapPage() {
+function MapPage(isAdmin) {
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
+    const [showAdminPopup, setShowAdminPopup] = useState(false);
+    const [spotId, setSpotId] = useState('');
+    const [subCol, setSubCol] = useState('left');
+
     // All variables are dependent on the lotWidth. If the parking lot size needs to be controlled, just change lotWidth
     const lotWidth = 80;
     const lotHeight = lotWidth / 2;
@@ -41,10 +45,63 @@ function MapPage() {
     setNearestSpot(nearest);
   },[parkingSpots]);
 
+  function openAdminPopup(){
+    setShowAdminPopup(true);
+  }
+
+  function closeAdminPopup(){
+    setShowAdminPopup(false);
+  }
+
+  function addParkingSpot(spotId, subCol){
+    fetch('http://localhost:3000/api/parking-spots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({spotId, subCol})
+    })
+    .then(response => response.json())
+    .then(data => {
+      setParkingSpots([...parkingSpots, data]);
+    });
+  }
+
+  function handleAddSubmit(e){
+    e.preventDefault();
+    //addParkingSpot
+    closeAdminPopup();
+  }
 
   return (
     <div>
       <h1>Parking Spots Map</h1>
+      {isAdmin &&(
+        <div className="add-link">
+          <a href="#" onClick={openAdminPopup}>New Parking Spot</a>
+        </div>
+      )}
+
+      {showAdminPopup && (
+        <div className="add-popup">
+          <h2>Add Parking Spot</h2>
+            <form onSubmit={handleAddSubmit}>
+              Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
+              <br/>
+              Select column:
+              <select value={subCol} onChange={e => setSubCol(e.target.value)}>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+              </select>
+              <br/>
+              <button type="submit">Submit</button>
+
+            </form>
+            <button onClick={closeAdminPopup}>Close</button>
+        </div>
+
+      )}
+
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
             {/* Draw the car */}

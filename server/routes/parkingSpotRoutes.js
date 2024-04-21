@@ -1,19 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const parkingSpotController = require('../controllers/parkingSpotController');
+const { getAllParkingSpots, addParkingSpot, removeParkingSpot, updateParkingSpot } = require('../controllers/parkingSpotController');
+const isAdmin = require('./middleware');
 
 // Route to get all parking spots
-router.get('/',parkingSpotController.getAllParkingSpots);
+router.get('/', getAllParkingSpots);
 
-// Route to add a new parking spot
-router.post('/',parkingSpotController.addParkingSpot);
-
-// Controller functions
-const { addParkingSpot, removeParkingSpot, updateParkingSpot } = require('../controllers/adminController');
-
-// Routes
-router.post('/admin/parking-spots', addParkingSpot);
-router.delete('/admin/parking-spots/:id', removeParkingSpot);
-router.put('/admin/parking-spots/:id', updateParkingSpot);
+// Admin Routes
+// TODO: Check if the user accessing these routes is logged in as admin
+router.post('/admin', addParkingSpot);
+router.delete('/admin', removeParkingSpot);
+router.put('/admin', updateParkingSpot);
 
 module.exports = router;

@@ -15,7 +15,8 @@ exports.getAllParkingSpots = async(req, res) => {
 // Add a new parking spot
 exports.addParkingSpot = async(req, res) => {
     const parkingSpot = new ParkingSpot({
-        spotId: req.body.spotId
+        spotId: req.body.spotId,
+        subColumn: re.body.subColumn
     });
 
     try{
@@ -28,13 +29,26 @@ exports.addParkingSpot = async(req, res) => {
 
 // Remove a parking spot
 exports.removeParkingSpot = async (req, res) => {
-    const removedSpot = await ParkingSpot.findByIdAndRemove(req.params.id);
-    res.json(removedSpot);
+    try{
+        const removedSpot = await ParkingSpot.findByIdAndRemove(req.body.id);
+        res.json(removedSpot);
+    }catch(err){
+        res.status(400).json({message: err.message});
+    }
   };
   
-  // Update a parking spot
-  exports.updateParkingSpot = async (req, res) => {
-    const updatedSpot = await ParkingSpot.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updatedSpot);
+// Update a parking spot
+exports.updateParkingSpot = async (req, res) => {
+    const parkingSpot = new ParkingSpot({
+        spotId: req.body.spotId,
+        subColumn: re.body.subColumn,
+        status: req.body.status
+    });
+    try{
+        const updatedSpot = await ParkingSpot.findByIdAndUpdate(req.body.id, parkingSpot, { new: true });
+        res.json(updatedSpot);
+    }catch(err){
+        res.status(400).json({message: err.message});
+    }
   };
 

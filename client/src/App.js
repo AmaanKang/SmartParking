@@ -8,7 +8,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage/>} />
-        <Route path="/map" element={<MapPage/>} />
+        <Route path="/map" element={<MapPage isAdmin={true}/>} />
       </Routes>
     </Router>
   );
