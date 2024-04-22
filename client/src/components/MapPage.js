@@ -5,6 +5,8 @@ function MapPage(isAdmin) {
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
     const [showAdminPopup, setShowAdminPopup] = useState(false);
+    const [showRemovePopup, setShowRemovePopup] = useState(false);
+    const [showUpdatePopup, setShowUpdatePopup] = useState(false);
     const [spotId, setSpotId] = useState('');
     const [subCol, setSubCol] = useState('left');
 
@@ -45,16 +47,34 @@ function MapPage(isAdmin) {
     setNearestSpot(nearest);
   },[parkingSpots]);
 
-  function openAdminPopup(){
-    setShowAdminPopup(true);
+  function openAdminPopup(type){
+    console.log(type);
+    if(type === 'add'){
+      console.log("this is add");
+      setShowAdminPopup(true);
+    }
+    else if(type === 'remove'){
+      setShowRemovePopup(true);
+    }
+    else{
+      setShowUpdatePopup(true);
+    }
   }
 
-  function closeAdminPopup(){
-    setShowAdminPopup(false);
+  function closeAdminPopup(type){
+    if(type === 'add'){
+      setShowAdminPopup(false);
+    }
+    else if(type === 'remove'){
+      setShowRemovePopup(false);
+    }
+    else{
+      setShowUpdatePopup(false);
+    }
   }
 
   function addParkingSpot(spotId, subCol){
-    fetch('http://localhost:3000/api/parking-spots', {
+    fetch('http://localhost:3000/api/parking-spots/admin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -64,12 +84,30 @@ function MapPage(isAdmin) {
     .then(response => response.json())
     .then(data => {
       setParkingSpots([...parkingSpots, data]);
+      setSpotId('');
+      setSubCol('left');
     });
   }
 
   function handleAddSubmit(e){
     e.preventDefault();
-    //addParkingSpot
+    console.log(spotId);
+    console.log(subCol);
+    addParkingSpot(spotId, subCol);
+    closeAdminPopup();
+  }
+  function handleRemoveSubmit(e){
+    e.preventDefault();
+    console.log(spotId);
+    console.log(subCol);
+    //addParkingSpot(spotId, subCol);
+    closeAdminPopup();
+  }
+  function handleUpdateSubmit(e){
+    e.preventDefault();
+    console.log(spotId);
+    console.log(subCol);
+    //addParkingSpot(spotId, subCol);
     closeAdminPopup();
   }
 
@@ -77,8 +115,10 @@ function MapPage(isAdmin) {
     <div>
       <h1>Parking Spots Map</h1>
       {isAdmin &&(
-        <div className="add-link">
-          <a href="#" onClick={openAdminPopup}>New Parking Spot</a>
+        <div className="admin-link">
+          <a href="#" onClick={() => openAdminPopup('add')}>New Parking Spot</a> <br/>
+          <a href="#" onClick={() => openAdminPopup('remove')}>Remove Parking Spot</a> <br/>
+          <a href="#" onClick={() => openAdminPopup('update')}>Update Parking Spot</a>
         </div>
       )}
 
@@ -97,7 +137,47 @@ function MapPage(isAdmin) {
               <button type="submit">Submit</button>
 
             </form>
-            <button onClick={closeAdminPopup}>Close</button>
+            <button onClick={closeAdminPopup('add')}>Close</button>
+        </div>
+
+      )}
+
+      {showRemovePopup && (
+        <div className="remove-popup">
+          <h2>Remove Parking Spot</h2>
+            <form onSubmit={handleRemoveSubmit}>
+              Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
+              <br/>
+              Select column:
+              <select value={subCol} onChange={e => setSubCol(e.target.value)}>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+              </select>
+              <br/>
+              <button type="submit">Submit</button>
+
+            </form>
+            <button onClick={closeAdminPopup('remove')}>Close</button>
+        </div>
+
+      )}
+
+      {showUpdatePopup && (
+        <div className="update-popup">
+          <h2>Update Parking Spot</h2>
+            <form onSubmit={handleUpdateSubmit}>
+              Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
+              <br/>
+              Select column:
+              <select value={subCol} onChange={e => setSubCol(e.target.value)}>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+              </select>
+              <br/>
+              <button type="submit">Submit</button>
+
+            </form>
+            <button onClick={closeAdminPopup('update')}>Close</button>
         </div>
 
       )}
