@@ -30,7 +30,7 @@ exports.addParkingSpot = async(req, res) => {
 // Remove a parking spot
 exports.removeParkingSpot = async (req, res) => {
     try{
-        const removedSpot = await ParkingSpot.findOneAndRemove({ spotId: req.body.spotId, subCol: req.body.subCol });
+        const removedSpot = await ParkingSpot.findOneAndDelete({ spotId: req.body.spotId, subColumn: req.body.subCol });
         res.json(removedSpot);
     }catch(err){
         res.status(400).json({message: err.message});

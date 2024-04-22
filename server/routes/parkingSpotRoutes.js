@@ -9,9 +9,9 @@ router.get('/', getAllParkingSpots);
 
 // Admin Routes
 // TODO: Check if the user accessing these routes is logged in as admin
-router.post('/admin', addParkingSpot);
-router.delete('/admin', removeParkingSpot);
-router.put('/admin', updateParkingSpot);
+router.post('/admin/add/', addParkingSpot);
+router.delete('/admin/delete/', removeParkingSpot);
+router.put('/admin/update/', updateParkingSpot);
 
 // Route to update parking spot status
 // TODO: Modify the function to get the data from sensor

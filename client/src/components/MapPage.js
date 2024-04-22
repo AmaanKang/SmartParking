@@ -4,7 +4,7 @@ import {Stage, Layer, Rect, Text, Circle} from 'react-konva';
 function MapPage(isAdmin) {
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
-    const [showAdminPopup, setShowAdminPopup] = useState(false);
+    const [showAddPopup, setShowAddPopup] = useState(false);
     const [showRemovePopup, setShowRemovePopup] = useState(false);
     const [showUpdatePopup, setShowUpdatePopup] = useState(false);
     const [spotId, setSpotId] = useState('');
@@ -19,6 +19,7 @@ function MapPage(isAdmin) {
     const yMultiplier = lotWidth / 2;
     const carPosition = {x: 400, y: 500};
     
+  // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
       fetch('http://localhost:3000/api/parking-spots')
       .then(response => response.json())
@@ -27,6 +28,7 @@ function MapPage(isAdmin) {
       });
   },[]);
 
+  // Calculate the nearest spot after any change in the parkingSpots array
   useEffect(() => {
     // Find the nearest free parking spot to the car
     let nearest = null;
@@ -47,34 +49,9 @@ function MapPage(isAdmin) {
     setNearestSpot(nearest);
   },[parkingSpots]);
 
-  function openAdminPopup(type){
-    console.log(type);
-    if(type === 'add'){
-      console.log("this is add");
-      setShowAdminPopup(true);
-    }
-    else if(type === 'remove'){
-      setShowRemovePopup(true);
-    }
-    else{
-      setShowUpdatePopup(true);
-    }
-  }
-
-  function closeAdminPopup(type){
-    if(type === 'add'){
-      setShowAdminPopup(false);
-    }
-    else if(type === 'remove'){
-      setShowRemovePopup(false);
-    }
-    else{
-      setShowUpdatePopup(false);
-    }
-  }
-
+  // Add Parking Spot once the Add Parking Spot form is submitted
   function addParkingSpot(spotId, subCol){
-    fetch('http://localhost:3000/api/parking-spots/admin', {
+    fetch('http://localhost:3000/api/parking-spots/admin/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -89,26 +66,84 @@ function MapPage(isAdmin) {
     });
   }
 
+  // Delete the Parking Spot once the Delete Parking Spot form is submitted
+  function removeParkingSpot(spotId, subCol){
+    fetch('http://localhost:3000/api/parking-spots/admin/delete', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({spotId, subCol})
+    }).then(response => {
+      if (!response.ok) {
+        return response.text().then(text => {
+          throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      const updatedSpots = parkingSpots.filter(spot => spot.spotId !== data.spotId || spot.subColumn !== data.subColumn);
+      setParkingSpots(updatedSpots);
+      setSpotId('');
+      setSubCol('left');
+    })
+    .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
+  }
+
+  // Run this function when any of the admin hyperlinks are clicked on the page
+  function openAdminPopup(type){
+    if(type === 'add'){
+      setShowAddPopup(true);
+      setShowRemovePopup(false);
+      setShowUpdatePopup(false);
+    }
+    else if(type === 'remove'){
+      setShowRemovePopup(true);
+      setShowAddPopup(false);
+      setShowUpdatePopup(false);
+    }
+    else{
+      setShowUpdatePopup(true);
+      setShowAddPopup(false);
+      setShowRemovePopup(false);
+    }
+  }
+
+  // Run this function when the user clicks on Close button to close the current Admin Form
+  function closeAdminPopup(type){
+    if(type === 'add'){
+      setShowAddPopup(false);
+    }
+    else if(type === 'remove'){
+      setShowRemovePopup(false);
+    }
+    else{
+      setShowUpdatePopup(false);
+    }
+  }
+
+  
   function handleAddSubmit(e){
     e.preventDefault();
     console.log(spotId);
     console.log(subCol);
     addParkingSpot(spotId, subCol);
-    closeAdminPopup();
+    closeAdminPopup('add');
   }
   function handleRemoveSubmit(e){
     e.preventDefault();
     console.log(spotId);
     console.log(subCol);
-    //addParkingSpot(spotId, subCol);
-    closeAdminPopup();
+    removeParkingSpot(spotId, subCol);
+    closeAdminPopup('remove');
   }
   function handleUpdateSubmit(e){
     e.preventDefault();
     console.log(spotId);
     console.log(subCol);
     //addParkingSpot(spotId, subCol);
-    closeAdminPopup();
+    closeAdminPopup('update');
   }
 
   return (
@@ -122,7 +157,7 @@ function MapPage(isAdmin) {
         </div>
       )}
 
-      {showAdminPopup && (
+      {showAddPopup && (
         <div className="add-popup">
           <h2>Add Parking Spot</h2>
             <form onSubmit={handleAddSubmit}>
@@ -137,7 +172,7 @@ function MapPage(isAdmin) {
               <button type="submit">Submit</button>
 
             </form>
-            <button onClick={closeAdminPopup('add')}>Close</button>
+            <button onClick={() => closeAdminPopup('add')}>Close</button>
         </div>
 
       )}
@@ -157,7 +192,7 @@ function MapPage(isAdmin) {
               <button type="submit">Submit</button>
 
             </form>
-            <button onClick={closeAdminPopup('remove')}>Close</button>
+            <button onClick={() => closeAdminPopup('remove')}>Close</button>
         </div>
 
       )}
@@ -177,7 +212,7 @@ function MapPage(isAdmin) {
               <button type="submit">Submit</button>
 
             </form>
-            <button onClick={closeAdminPopup('update')}>Close</button>
+            <button onClick={() => closeAdminPopup('update')}>Close</button>
         </div>
 
       )}
