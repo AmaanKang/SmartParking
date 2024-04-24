@@ -1,5 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Stage, Layer, Rect, Text, Circle} from 'react-konva';
+import './MapPage.css';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 function MapPage(isAdmin) {
     const [nearestSpot, setNearestSpot] = useState(null);
@@ -187,7 +191,20 @@ function MapPage(isAdmin) {
 
       {showAddPopup && (
         <div className="add-popup">
-          <h2>Add Parking Spot</h2>
+          <Modal
+          isOpen={showAddPopup}
+          onRequestClose={() => closeAdminPopup('add')}
+          contentLabel='Add Parking Spot'
+          style={{
+            content:{
+              top: '30%',
+              left:'30%',
+              right:'auto',
+              bottom: 'auto'
+            }
+          }}
+          >
+            <h2>Add Parking Spot</h2>
             <form onSubmit={handleAddSubmit}>
               Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
               <br/>
@@ -201,13 +218,28 @@ function MapPage(isAdmin) {
 
             </form>
             <button onClick={() => closeAdminPopup('add')}>Close</button>
+          </Modal>
+          
         </div>
 
       )}
 
       {showRemovePopup && (
         <div className="remove-popup">
-          <h2>Remove Parking Spot</h2>
+          <Modal
+          isOpen={showRemovePopup}
+          onRequestClose={() => closeAdminPopup('remove')}
+          contentLabel='Remove Parking Spot'
+          style={{
+            content:{
+              top: '30%',
+              left:'30%',
+              right:'auto',
+              bottom: 'auto'
+            }
+          }}
+          >
+            <h2>Remove Parking Spot</h2>
             <form onSubmit={handleRemoveSubmit}>
               Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
               <br/>
@@ -221,13 +253,29 @@ function MapPage(isAdmin) {
 
             </form>
             <button onClick={() => closeAdminPopup('remove')}>Close</button>
+
+          </Modal>
+          
         </div>
 
       )}
 
       {showUpdatePopup && (
         <div className="update-popup">
-          <h2>Update Parking Spot</h2>
+          <Modal
+          isOpen={showUpdatePopup}
+          onRequestClose={() => closeAdminPopup('update')}
+          contentLabel='Update Parking Spot'
+          style={{
+            content:{
+              top: '30%',
+              left:'30%',
+              right:'auto',
+              bottom: 'auto'
+            }
+          }}
+          >
+            <h2>Update Parking Spot</h2>
             <form onSubmit={handleUpdateSubmit}>
               Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
               <br/>
@@ -247,6 +295,9 @@ function MapPage(isAdmin) {
 
             </form>
             <button onClick={() => closeAdminPopup('update')}>Close</button>
+
+          </Modal>
+          
         </div>
 
       )}
