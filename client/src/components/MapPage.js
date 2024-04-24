@@ -9,7 +9,8 @@ function MapPage(isAdmin) {
     const [showUpdatePopup, setShowUpdatePopup] = useState(false);
     const [spotId, setSpotId] = useState('');
     const [subCol, setSubCol] = useState('left');
-
+    const [status, setStatus] = useState('free');
+ 
     // All variables are dependent on the lotWidth. If the parking lot size needs to be controlled, just change lotWidth
     const lotWidth = 80;
     const lotHeight = lotWidth / 2;
@@ -91,6 +92,32 @@ function MapPage(isAdmin) {
     .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
   }
 
+  // Update the status of a parking spot based on the request sent
+  function updateParkingSpot(spotId, subCol, status){
+    fetch('http://localhost:3000/api/parking-spots/admin/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({spotId, subCol, status})
+    }).then(response => {
+      if (!response.ok) {
+        return response.text().then(text => {
+          throw new Error(`HTTP error! status: ${response.status}, message: ${text}`);
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      const updatedSpots = parkingSpots.filter(spot => spot.spotId !== data.spotId || spot.subColumn !== data.subColumn);
+      setParkingSpots([...updatedSpots, data]);
+      setSpotId('');
+      setSubCol('left');
+      setStatus('free');
+    })
+    .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
+  }
+
   // Run this function when any of the admin hyperlinks are clicked on the page
   function openAdminPopup(type){
     if(type === 'add'){
@@ -142,7 +169,8 @@ function MapPage(isAdmin) {
     e.preventDefault();
     console.log(spotId);
     console.log(subCol);
-    //addParkingSpot(spotId, subCol);
+    console.log(status);
+    updateParkingSpot(spotId, subCol, status);
     closeAdminPopup('update');
   }
 
@@ -207,6 +235,12 @@ function MapPage(isAdmin) {
               <select value={subCol} onChange={e => setSubCol(e.target.value)}>
                 <option value="left">Left</option>
                 <option value="right">Right</option>
+              </select>
+              <br/>
+              Select Parking Status:
+              <select value={status} onChange={e => setStatus(e.target.value)}>
+                <option value="free">Free</option>
+                <option value="occupied">Occupied</option>
               </select>
               <br/>
               <button type="submit">Submit</button>

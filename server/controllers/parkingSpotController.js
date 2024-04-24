@@ -41,7 +41,7 @@ exports.removeParkingSpot = async (req, res) => {
 exports.updateParkingSpot = async (req, res) => {
     try{
         const updatedSpot = await ParkingSpot.findOneAndUpdate(
-            { spotId: req.body.spotId, subCol: req.body.subCol },
+            { spotId: req.body.spotId, subColumn: req.body.subCol },
             { status: req.body.status },
             { new: true }
           );
