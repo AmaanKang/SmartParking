@@ -10,24 +10,27 @@ const firebaseConfig = {
     projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
     storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
-};
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+  };
+  
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-//const app = initializeApp(firebaseConfig);
-//const auth = getAuth();
-
-const login = async (email, password) => {
-    /**try {
-        await firebase.auth().signInWithEmailAndPassword(auth, email, password);
-        return true;
-    } catch (error) {
-        return false;
-    }*/
-}
 
 function Login(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const login = async (email, password) => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
     return(
         <div>
             <form onSubmit={e => {
