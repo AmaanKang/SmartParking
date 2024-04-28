@@ -34,14 +34,15 @@ function App() {
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
-  },[])
+  },[auth,isAdmin]);
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage/>} />
+        <Route path="/" element={<HomePage isAdmin={isAdmin} setIsAdmin={setIsAdmin} onAuth={auth}/>} />
+        <Route path="/home" element={<HomePage isAdmin={isAdmin}/>} />
         <Route path="/map" element={<MapPage isAdmin={isAdmin}/>} />
-        <Route path="/login" element={<Login/>} />
+        <Route path="/login" element={<Login onAuth={auth} />}/>
       </Routes>
     </Router>
   );

@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 
 Modal.setAppElement('#root');
 
-function MapPage(isAdmin) {
+function MapPage({isAdmin}) {
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
