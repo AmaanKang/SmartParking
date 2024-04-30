@@ -9,6 +9,7 @@ function Login({onAuth}){
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    // When Login Submit button is clicked
     const login = async (email, password) => {
         try {
             await signInWithEmailAndPassword(onAuth, email, password);
@@ -22,7 +23,8 @@ function Login({onAuth}){
         }
     }
 
-    /**useEffect(() => {
+    /** In case the user directly accesses the login page, check the login status
+     * useEffect(() => {
         const unsubscribe = onAuthStateChanged(onAuth, (user) => {
           if (user) {
             navigate('/home');

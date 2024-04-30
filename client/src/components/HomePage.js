@@ -7,6 +7,7 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
   const url = baseUrl + '/map';
   const loginUrl = baseUrl + '/login';
 
+  // When the logout button is clicked
   const logout = async () => {
     try {
       await signOut(onAuth);

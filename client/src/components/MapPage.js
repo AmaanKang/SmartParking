@@ -3,6 +3,7 @@ import {Stage, Layer, Rect, Text, Circle} from 'react-konva';
 import './MapPage.css';
 import Modal from 'react-modal';
 
+// To make sure that the modals are having app root element as the actual parent
 Modal.setAppElement('#root');
 
 function MapPage({isAdmin}) {
@@ -22,7 +23,7 @@ function MapPage({isAdmin}) {
     const xNum = lotWidth / 6;
     const yNum = lotWidth;
     const yMultiplier = lotWidth / 2;
-    const carPosition = {x: 400, y: 500};
+    const carPosition = {x: 600, y: 500};
     
   // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
@@ -255,9 +256,7 @@ function MapPage({isAdmin}) {
             <button onClick={() => closeAdminPopup('remove')}>Close</button>
 
           </Modal>
-          
         </div>
-
       )}
 
       {showUpdatePopup && (

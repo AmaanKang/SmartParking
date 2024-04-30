@@ -6,7 +6,7 @@ import Login from './components/login.js';
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged} from "firebase/auth";
 
-
+// Get the configuration from the Firebase Console
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -23,6 +23,7 @@ const auth = getAuth(app);
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
+  // When the user logs in logs out, switch the isAdmin boolean
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {
@@ -40,7 +41,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage isAdmin={isAdmin} setIsAdmin={setIsAdmin} onAuth={auth}/>} />
-        <Route path="/home" element={<HomePage isAdmin={isAdmin}/>} />
+        <Route path="/home" element={<HomePage isAdmin={isAdmin} setIsAdmin={setIsAdmin} onAuth={auth}/>} />
         <Route path="/map" element={<MapPage isAdmin={isAdmin}/>} />
         <Route path="/login" element={<Login onAuth={auth} />}/>
       </Routes>
