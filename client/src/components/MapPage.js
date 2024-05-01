@@ -15,6 +15,9 @@ function MapPage({isAdmin}) {
     const [spotId, setSpotId] = useState('');
     const [subCol, setSubCol] = useState('left');
     const [status, setStatus] = useState('free');
+    const [openEntrancePopup, setOpenEntrancePopup] = useState(false);
+    const [carPositionX, setCarPositionX] = useState(600);
+    const [carPositionY, setCarPositionY] = useState(500);
  
     // All variables are dependent on the lotWidth. If the parking lot size needs to be controlled, just change lotWidth
     const lotWidth = 80;
@@ -23,7 +26,6 @@ function MapPage({isAdmin}) {
     const xNum = lotWidth / 6;
     const yNum = lotWidth;
     const yMultiplier = lotWidth / 2;
-    const carPosition = {x: 600, y: 500};
     
   // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
@@ -45,7 +47,7 @@ function MapPage({isAdmin}) {
           const r = parseInt(spot.spotId.slice(1) - 1);
           let rightCol = spot.subColumn === 'right' ? lotWidth : 0;
           const spotPosition = {x: xNum + col * xMultiplier + rightCol, y: yNum + r * yMultiplier};
-          const distance = Math.hypot(carPosition.x - spotPosition.x, carPosition.y - spotPosition.y);
+          const distance = Math.hypot(carPositionX - spotPosition.x, carPositionY - spotPosition.y);
           if(distance < minDistance) {
               minDistance = distance;
               nearest = spot;
@@ -53,7 +55,7 @@ function MapPage({isAdmin}) {
       }
     });
     setNearestSpot(nearest);
-  },[parkingSpots]);
+  },[parkingSpots,carPositionX,carPositionY]);
 
   // Add Parking Spot once the Add Parking Spot form is submitted
   function addParkingSpot(spotId, subCol){
@@ -155,6 +157,10 @@ function MapPage({isAdmin}) {
     }
   }
 
+  function changeEntrance(){
+    setOpenEntrancePopup(true);
+  }
+
   
   function handleAddSubmit(e){
     e.preventDefault();
@@ -178,15 +184,30 @@ function MapPage({isAdmin}) {
     updateParkingSpot(spotId, subCol, status);
     closeAdminPopup('update');
   }
+  function handleEntranceSubmit(e){
+    e.preventDefault();
+    console.log(carPositionX);
+    console.log(carPositionY);
+    setCarPositionX(carPositionX);
+    setCarPositionY(carPositionY);
+  }
 
   return (
     <div>
       <h1>Parking Spots Map</h1>
+      
       {isAdmin &&(
         <div className="admin-link">
-          <a href="#" onClick={() => openAdminPopup('add')}>New Parking Spot</a> <br/>
-          <a href="#" onClick={() => openAdminPopup('remove')}>Remove Parking Spot</a> <br/>
-          <a href="#" onClick={() => openAdminPopup('update')}>Update Parking Spot</a>
+          
+            <ul style={{ listStyleType: "none", padding: 0 }}>
+              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => openAdminPopup('add')}>New Parking Spot</a></li>
+              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => openAdminPopup('remove')}>Remove Parking Spot</a></li>
+              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => openAdminPopup('update')}>Update Parking Spot</a></li>
+              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => changeEntrance()}>Change the Entrance</a></li>
+              <br/><br/>
+              <a>(If the current parking entrance is incorrect, change it by entering the
+            x and y coordinates of the entrance position. The entrance is indicated by yellow circle.)</a>
+            </ul>
         </div>
       )}
 
@@ -301,12 +322,45 @@ function MapPage({isAdmin}) {
 
       )}
 
+      {openEntrancePopup && (
+        <div className="entrance-popup">
+          <Modal
+          isOpen={openEntrancePopup}
+          onRequestClose={() => setOpenEntrancePopup(false)}
+          contentLabel='Change Entrance'
+          style={{
+            content:{
+              top: '30%',
+              left:'30%',
+              right:'auto',
+              bottom: 'auto'
+            }
+          }}
+          >
+            <h2>Change Entrance</h2>
+            <form>
+              Enter x coordinate: <input type="number" value={carPositionX} onChange={e => setCarPositionX(e.target.value)} placeholder="x coordinate"/>
+              <br/>
+              Enter y coordinate: <input type="number" value={carPositionY} onChange={e => setCarPositionY(e.target.value)} placeholder="y coordinate"/>
+              <br/>
+            </form>
+            <button onClick={() => setOpenEntrancePopup(false)}>Close</button>
+
+          </Modal>
+          
+        </div>
+
+      
+      )}
+
+      <p>The red parking spots have cars parked in there, the white ones are available, green one is the suggested parking spot for you.</p>
+
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
             {/* Draw the car */}
             <Circle
-                x={carPosition.x}
-                y={carPosition.y}
+                x={carPositionX}
+                y={carPositionY}
                 radius={20}
                 fill='yellow'
                 stroke='black'

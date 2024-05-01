@@ -37,6 +37,7 @@ function Login({onAuth}){
 
     return(
         <div>
+            <h1>Login as Admin</h1>
             <form onSubmit={e => {
                 e.preventDefault();
                 login(email, password)

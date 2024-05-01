@@ -29,10 +29,12 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
           <div>
             <button onClick={() => {
               logout();
-            }}>Logout</button> <br/>
+            }}>Logout as Administrator</button> <br/>
           </div>
       )}
-      <p>Scan the QR code below to view the parking spots map:</p>
+      <p>Below is the QR code which can be printed and put at the front of the parking lot. Customers can scan this QR code and it will take them to the 
+        map of the parking lot.
+      </p>
       <a href={url}>
         <QRCode value={url} />
       </a>
