@@ -18,6 +18,8 @@ function MapPage({isAdmin}) {
     const [openEntrancePopup, setOpenEntrancePopup] = useState(false);
     const [carPositionX, setCarPositionX] = useState(600);
     const [carPositionY, setCarPositionY] = useState(500);
+    const [occupiedCount, setOccupiedCount] = useState(0);
+    const [freeCount, setFreeCount] = useState(0);
  
     // All variables are dependent on the lotWidth. If the parking lot size needs to be controlled, just change lotWidth
     const lotWidth = 80;
@@ -26,6 +28,7 @@ function MapPage({isAdmin}) {
     const xNum = lotWidth / 6;
     const yNum = lotWidth;
     const yMultiplier = lotWidth / 2;
+    
     
   // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
@@ -41,8 +44,11 @@ function MapPage({isAdmin}) {
     // Find the nearest free parking spot to the car
     let nearest = null;
     let minDistance = Infinity;
+    var occupied = 0;
+    var free = 0;
     parkingSpots.forEach(spot => {
       if(spot.status === 'free') {
+          free++;
           const col = spot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);
           const r = parseInt(spot.spotId.slice(1) - 1);
           let rightCol = spot.subColumn === 'right' ? lotWidth : 0;
@@ -52,8 +58,12 @@ function MapPage({isAdmin}) {
               minDistance = distance;
               nearest = spot;
           }
+      }else{
+        occupied++;
       }
     });
+    setOccupiedCount(occupied);
+    setFreeCount(free);
     setNearestSpot(nearest);
   },[parkingSpots,carPositionX,carPositionY]);
 
@@ -184,14 +194,6 @@ function MapPage({isAdmin}) {
     updateParkingSpot(spotId, subCol, status);
     closeAdminPopup('update');
   }
-  function handleEntranceSubmit(e){
-    e.preventDefault();
-    console.log(carPositionX);
-    console.log(carPositionY);
-    setCarPositionX(carPositionX);
-    setCarPositionY(carPositionY);
-  }
-
   return (
     <div>
       <h1>Parking Spots Map</h1>
@@ -354,7 +356,9 @@ function MapPage({isAdmin}) {
       )}
 
       <p>The red parking spots have cars parked in there, the white ones are available, green one is the suggested parking spot for you.</p>
-
+      <p>Number of occupied spots: {occupiedCount}</p>
+      <p>Number of free spots: {freeCount}</p>
+      <a href="#">Book a parking Spot</a>
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
             {/* Draw the car */}
@@ -397,6 +401,7 @@ function MapPage({isAdmin}) {
           })}
         </Layer>
       </Stage>
+      
     </div>
   );
 }
