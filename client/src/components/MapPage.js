@@ -20,6 +20,7 @@ function MapPage({isAdmin}) {
     const [carPositionY, setCarPositionY] = useState(500);
     const [occupiedCount, setOccupiedCount] = useState(0);
     const [freeCount, setFreeCount] = useState(0);
+    const [showBookingPopup, setShowBookingPopup] = useState(false);
  
     // All variables are dependent on the lotWidth. If the parking lot size needs to be controlled, just change lotWidth
     const lotWidth = 80;
@@ -171,6 +172,9 @@ function MapPage({isAdmin}) {
     setOpenEntrancePopup(true);
   }
 
+  function openBookingPopup(){
+    setShowBookingPopup(true);
+  }
   
   function handleAddSubmit(e){
     e.preventDefault();
@@ -194,6 +198,13 @@ function MapPage({isAdmin}) {
     updateParkingSpot(spotId, subCol, status);
     closeAdminPopup('update');
   }
+  function handleBookingSubmit(e){
+    e.preventDefault();
+    console.log('Booking a parking spot');
+
+    setShowBookingPopup(false);
+  }
+
   return (
     <div>
       <h1>Parking Spots Map</h1>
@@ -311,6 +322,7 @@ function MapPage({isAdmin}) {
               <select value={status} onChange={e => setStatus(e.target.value)}>
                 <option value="free">Free</option>
                 <option value="occupied">Occupied</option>
+                <option value="reserved">Reserved</option>
               </select>
               <br/>
               <button type="submit">Submit</button>
@@ -347,18 +359,41 @@ function MapPage({isAdmin}) {
               <br/>
             </form>
             <button onClick={() => setOpenEntrancePopup(false)}>Close</button>
-
           </Modal>
-          
         </div>
-
-      
       )}
+
+      {showBookingPopup && (
+          <div className="booking-popup">
+            <Modal
+              isOpen={showBookingPopup}
+              onRequestClose={() => setShowBookingPopup(false)}
+              contentLabel='Book a Parking Spot'
+              style={{
+                content:{
+                  top: '30%',
+                  left:'30%',
+                  right:'auto',
+                  bottom: 'auto'
+                }
+              }}
+            >
+              <h2>Book a Parking Spot</h2>
+              <form onSubmit={handleBookingSubmit}>
+                Enter your email: <input type="email" placeholder="Email"/>
+                <br/>
+                <button>Submit</button>
+              </form>
+              <button onClick={() => setShowBookingPopup(false)}>Close</button>
+            </Modal>
+          </div>
+        )
+      }
 
       <p>The red parking spots have cars parked in there, the white ones are available, green one is the suggested parking spot for you.</p>
       <p>Number of occupied spots: {occupiedCount}</p>
       <p>Number of free spots: {freeCount}</p>
-      <a href="#">Book a parking Spot</a>
+      <a href="#" onClick={() => openBookingPopup()}>Book a parking Spot</a>
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
             {/* Draw the car */}
@@ -376,7 +411,7 @@ function MapPage({isAdmin}) {
             const row = parseInt(parkingSpot.spotId.slice(1)) - 1;
             //If the current column is on right, then the lot should be drawn after left column, so adjust the x position by adding lotWidth to it.
             let rightColumn = parkingSpot.subColumn === 'right' ? lotWidth : 0;
-            const fillColor = parkingSpot === nearestSpot ? 'green' : (parkingSpot.status === 'free' ? 'white' : 'red');
+            const fillColor = parkingSpot === nearestSpot ? 'green' : (parkingSpot.status === 'free' ? 'white' : (parkingSpot.status === 'reserved' ? 'yellow' : 'red'));
             return (
               <React.Fragment key={parkingSpot.spotId+parkingSpot.subColumn}>
                 {/* Draw the parking spots */}
