@@ -3,7 +3,6 @@ const ParkingSpot = require('../models/parkingSpot');
 // Get all parking spots in a lot
 exports.getAllParkingSpots = async(req, res) => {
     try{
-        console.log("I am parking spot controller");
         const parkingSpots = await ParkingSpot.find();
         res.json(parkingSpots);
     } catch(err){

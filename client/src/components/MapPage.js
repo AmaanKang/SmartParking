@@ -201,7 +201,7 @@ function MapPage({isAdmin}) {
   function handleBookingSubmit(e){
     e.preventDefault();
     console.log('Booking a parking spot');
-
+    
     setShowBookingPopup(false);
   }
 
