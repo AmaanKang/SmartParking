@@ -21,7 +21,10 @@ function MapPage({isAdmin}) {
     const [occupiedCount, setOccupiedCount] = useState(0);
     const [freeCount, setFreeCount] = useState(0);
     const [showBookingPopup, setShowBookingPopup] = useState(false);
- 
+    const [bookings, setBookings] = useState([]);
+    const [emailAddress, setEmailAddress] = useState('');
+    const [message, setMessage] = useState('');
+
     // All variables are dependent on the lotWidth. If the parking lot size needs to be controlled, just change lotWidth
     const lotWidth = 80;
     const lotHeight = lotWidth / 2;
@@ -30,14 +33,23 @@ function MapPage({isAdmin}) {
     const yNum = lotWidth;
     const yMultiplier = lotWidth / 2;
     
-    
+    // Access all bookings saved in database. These bookings consist of the registrations that customers have made before coming to parking lot
+    function getAllBookings(){
+      fetch('http://localhost:3000/api/parking-spots/user')
+      .then(response => response.json())
+      .then(data => {
+        setBookings(data);
+      });
+    }
+
   // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
       fetch('http://localhost:3000/api/parking-spots')
       .then(response => response.json())
       .then(data => {
         setParkingSpots(data);
-      });
+      })
+      .then(getAllBookings());
   },[]);
 
   // Calculate the nearest spot after any change in the parkingSpots array
@@ -136,6 +148,19 @@ function MapPage({isAdmin}) {
     .catch(error => console.log('There was a problem with the fetch operation: ' + error.message));
   }
 
+  // Access one booking based on the email address that user has entered
+  function getOneBooking(emailAddress){
+    fetch('http://localhost:3000/api/parking-spots/user/'+emailAddress)
+    .then(response => response.json())
+    .then(data => {
+      if(data != null){
+        setMessage("Please go ahead and park at the green spot....");
+      }else{
+        setMessage("We cannot find any booking associated with this email address....");
+      }
+    });
+  }
+
   // Run this function when any of the admin hyperlinks are clicked on the page
   function openAdminPopup(type){
     if(type === 'add'){
@@ -168,14 +193,17 @@ function MapPage({isAdmin}) {
     }
   }
 
+  // The admins can change the entrance location by using pixel values.
   function changeEntrance(){
     setOpenEntrancePopup(true);
   }
 
+  // When the users want to access their booking after reaching the parking lot, they can submit email address to do so.
   function openBookingPopup(){
     setShowBookingPopup(true);
   }
   
+  // All below functions are used to handle the form submission and call the appropriate function
   function handleAddSubmit(e){
     e.preventDefault();
     console.log(spotId);
@@ -201,13 +229,12 @@ function MapPage({isAdmin}) {
   function handleBookingSubmit(e){
     e.preventDefault();
     console.log('Booking a parking spot');
-    
-    setShowBookingPopup(false);
+    const bookingGet = getOneBooking(emailAddress);
   }
 
   return (
     <div>
-      <h1>Parking Spots Map</h1>
+      <h1>Parking Spots</h1>
       
       {isAdmin &&(
         <div className="admin-link">
@@ -378,22 +405,37 @@ function MapPage({isAdmin}) {
                 }
               }}
             >
-              <h2>Book a Parking Spot</h2>
+              <h2>Access a Parking Spot Booking</h2>
               <form onSubmit={handleBookingSubmit}>
-                Enter your email: <input type="email" placeholder="Email"/>
+                Enter your email: <input type="email" value={emailAddress} onChange={e => setEmailAddress(e.target.value)} placeholder="Email"/>
                 <br/>
                 <button>Submit</button>
               </form>
-              <button onClick={() => setShowBookingPopup(false)}>Close</button>
+              <button onClick={() => {
+                setShowBookingPopup(false);
+                setMessage('');
+                setEmailAddress('');
+              }}>Close</button>
+              <p>{message}</p>
             </Modal>
           </div>
         )
       }
 
-      <p>The red parking spots have cars parked in there, the white ones are available, green one is the suggested parking spot for you.</p>
+      {// If the bookings have exceeded the available spots, then no new cars can enter the lot
+      (freeCount <= bookings.length) && (
+        <div>
+          <h2 style={{color:"red"}}>There are no available parking spots at the minute. Sorry for any inconvenience...</h2>
+        </div>
+      )}
+
+      {// If the spots are plenty for the bookings made, then new cars can enter the lot and use that for parking
+      (freeCount > bookings.length) && (
+        <div>
+          <p>The red parking spots have cars parked in there, the white ones are available, green one is the suggested parking spot for you.</p>
       <p>Number of occupied spots: {occupiedCount}</p>
       <p>Number of free spots: {freeCount}</p>
-      <a href="#" onClick={() => openBookingPopup()}>Book a parking Spot</a>
+      {/*<a href="#" onClick={() => openBookingPopup()}>Access a Parking Spot Booking</a>*/}
       <Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
             {/* Draw the car */}
@@ -436,7 +478,8 @@ function MapPage({isAdmin}) {
           })}
         </Layer>
       </Stage>
-      
+        </div>
+      )}
     </div>
   );
 }

@@ -21,11 +21,9 @@ async function run() {
     // Get the parkingSpots collection
     const collection = db.collection('bookings');
     const bookings = [
-        {parkingSpot: {
-            $oid: "6621ad844b128a05f7447b8a"
-          }, 
-        email: 'a@booking.com'
-        }
+        {email: 'a@booking.com'},
+        {email: 'b@booking.com'},
+        {email: 'c@booking.com'},
     ];
     const result = await collection.insertMany(bookings);
     console.log(result);

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getAllParkingSpots, addParkingSpot, removeParkingSpot, updateParkingSpot } = require('../controllers/parkingSpotController');
-const { getAllBookings, addBooking } = require('../controllers/bookingController');
+const { getAllBookings, addBooking, getOneBooking } = require('../controllers/bookingController');
 const isAdmin = require('./middleware');
 const parkingSpot = require('../models/parkingSpot');
 
@@ -17,6 +17,7 @@ router.put('/admin/update/', updateParkingSpot);
 // User routes
 router.get('/user/', getAllBookings);
 router.post('/user/add/', addBooking);
+router.get('/user/:email', getOneBooking);
 
 
 // Route to update parking spot status
