@@ -1,6 +1,6 @@
 .map-page{
     text-align: center;
-    padding:5%;
+    padding:1%;
 }
 
 .map-page h1{
@@ -59,4 +59,15 @@
 
 .submit-button{
     background-color:#007BFF;
+}
+
+.home-link a{
+    color: white;
+    padding: 1% 2%;
+    border-radius: 1%;
+    cursor: pointer;
+    font-size: 100%;
+    background-color: rgb(146, 78, 78);
+    margin: 1% 1% auto 80%;
+    text-decoration: none;
 }

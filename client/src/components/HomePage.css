@@ -9,14 +9,22 @@
 }
 
 .login-link a,
-.logout-button button{
-    background-color: #007BFF;
+.logout-link a{
+    
     color: white;
     padding: 2% 4%;
     border-radius: 1%;
     cursor: pointer;
     font-size: 100%;
     text-decoration: none;
+}
+
+.login-link a{
+    background-color: #007BFF;
+}
+
+.logout-link a{
+    background-color: rgb(190, 32, 32);
 }
 
 .qr-code{

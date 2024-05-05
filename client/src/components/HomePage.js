@@ -27,10 +27,10 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
           </div>
       )}
       {isAdmin && (
-          <div className='logout-button'>
-            <button onClick={() => {
+          <div className='logout-link'>
+            <a onClick={() => {
               logout();
-            }}>Logout as Administrator</button> <br/>
+            }}>Logout as Administrator</a> <br/>
           </div>
       )}
       <div className='qr-code'>

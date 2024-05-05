@@ -7,6 +7,7 @@ import Modal from 'react-modal';
 Modal.setAppElement('#root');
 
 function MapPage({isAdmin}) {
+  const baseUrl = window.location.origin;
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
@@ -235,8 +236,12 @@ function MapPage({isAdmin}) {
   return (
     <div className='map-page'>
       <h1>Parking Spots</h1>
+      <div className='home-link'>
+      <a href={baseUrl}>Go to Home</a>
+      </div>
       
       {isAdmin &&(
+        
         <div className="admin-link">
           
             <ul style={{ listStyleType: "none", padding: 0 }}>
