@@ -3,6 +3,7 @@ import 'firebase/auth';
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import React, { useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
+import './login.css';
 
 function Login({onAuth}){
     const [email, setEmail] = useState('');
@@ -36,16 +37,20 @@ function Login({onAuth}){
       },[onAuth,navigate])*/
 
     return(
-        <div>
+        <div className='login-page'>
             <h1>Login as Admin</h1>
             <form onSubmit={e => {
                 e.preventDefault();
                 login(email, password)
             }}>
+                <label>
                 Email: <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required/>
-                <br/>
+                
+                </label>
+                <label>
                 Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required/>
-                <br/>
+                
+                </label>
                 <button type="submit">Login</button>
             </form>
         </div>

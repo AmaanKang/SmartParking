@@ -240,48 +240,39 @@ function MapPage({isAdmin}) {
         <div className="admin-link">
           
             <ul style={{ listStyleType: "none", padding: 0 }}>
-              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => openAdminPopup('add')}>New Parking Spot</a></li>
-              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => openAdminPopup('remove')}>Remove Parking Spot</a></li>
-              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => openAdminPopup('update')}>Update Parking Spot</a></li>
-              <li style={{ display: "inline-block", marginRight: "8%" }}><a href="#" onClick={() => changeEntrance()}>Change the Entrance</a></li>
+              <li><a href="#" onClick={() => openAdminPopup('add')}>New Parking Spot</a></li>
+              <li><a href="#" onClick={() => openAdminPopup('remove')}>Remove Parking Spot</a></li>
+              <li><a href="#" onClick={() => openAdminPopup('update')}>Update Parking Spot</a></li>
+              <li><a href="#" onClick={() => changeEntrance()}>Change the Entrance</a></li>
               <br/><br/>
-              <a>(If the current parking entrance is incorrect, change it by entering the
-            x and y coordinates of the entrance position. The entrance is indicated by yellow circle.)</a>
             </ul>
         </div>
       )}
 
       {showAddPopup && (
-        <div className="add-popup">
+        <div className='add-popup'>
           <Modal
           isOpen={showAddPopup}
           onRequestClose={() => closeAdminPopup('add')}
           contentLabel='Add Parking Spot'
-          style={{
-            content:{
-              top: '30%',
-              left:'30%',
-              right:'auto',
-              bottom: 'auto'
-            }
-          }}
+          className='add-popup'
           >
             <h2>Add Parking Spot</h2>
             <form onSubmit={handleAddSubmit}>
+              <label>
               Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
-              <br/>
-              Select column:
+              </label>
+             <label>
+             Select column:
               <select value={subCol} onChange={e => setSubCol(e.target.value)}>
                 <option value="left">Left</option>
                 <option value="right">Right</option>
               </select>
-              <br/>
-              <button type="submit">Submit</button>
-
+             </label>
+              <button type="submit" className='submit-button'>Submit</button>
             </form>
-            <button onClick={() => closeAdminPopup('add')}>Close</button>
+            <button onClick={() => closeAdminPopup('add')} className='close-button'>Close</button>
           </Modal>
-          
         </div>
 
       )}
@@ -292,29 +283,24 @@ function MapPage({isAdmin}) {
           isOpen={showRemovePopup}
           onRequestClose={() => closeAdminPopup('remove')}
           contentLabel='Remove Parking Spot'
-          style={{
-            content:{
-              top: '30%',
-              left:'30%',
-              right:'auto',
-              bottom: 'auto'
-            }
-          }}
+          className='remove-popup'
           >
             <h2>Remove Parking Spot</h2>
             <form onSubmit={handleRemoveSubmit}>
+              <label>
               Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
-              <br/>
+              </label>
+              <label>
               Select column:
               <select value={subCol} onChange={e => setSubCol(e.target.value)}>
                 <option value="left">Left</option>
                 <option value="right">Right</option>
               </select>
-              <br/>
-              <button type="submit">Submit</button>
+              </label>
+              <button type="submit" className='submit-button'>Submit</button>
 
             </form>
-            <button onClick={() => closeAdminPopup('remove')}>Close</button>
+            <button onClick={() => closeAdminPopup('remove')} className='close-button'>Close</button>
 
           </Modal>
         </div>
@@ -326,36 +312,32 @@ function MapPage({isAdmin}) {
           isOpen={showUpdatePopup}
           onRequestClose={() => closeAdminPopup('update')}
           contentLabel='Update Parking Spot'
-          style={{
-            content:{
-              top: '30%',
-              left:'30%',
-              right:'auto',
-              bottom: 'auto'
-            }
-          }}
+          className='update-popup'
           >
             <h2>Update Parking Spot</h2>
             <form onSubmit={handleUpdateSubmit}>
+              <label>
               Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
-              <br/>
+              </label>
+              <label>
               Select column:
               <select value={subCol} onChange={e => setSubCol(e.target.value)}>
                 <option value="left">Left</option>
                 <option value="right">Right</option>
               </select>
-              <br/>
+              </label>
+              <label>
               Select Parking Status:
               <select value={status} onChange={e => setStatus(e.target.value)}>
                 <option value="free">Free</option>
                 <option value="occupied">Occupied</option>
                 <option value="reserved">Reserved</option>
               </select>
-              <br/>
-              <button type="submit">Submit</button>
+              </label>
+              <button type="submit" className='submit-button'>Submit</button>
 
             </form>
-            <button onClick={() => closeAdminPopup('update')}>Close</button>
+            <button onClick={() => closeAdminPopup('update')} className='close-button'>Close</button>
 
           </Modal>
           
@@ -369,23 +351,21 @@ function MapPage({isAdmin}) {
           isOpen={openEntrancePopup}
           onRequestClose={() => setOpenEntrancePopup(false)}
           contentLabel='Change Entrance'
-          style={{
-            content:{
-              top: '30%',
-              left:'30%',
-              right:'auto',
-              bottom: 'auto'
-            }
-          }}
+          className='entrance-popup'
           >
             <h2>Change Entrance</h2>
+            <span>If the current parking entrance is incorrect, change it by entering the
+            x and y coordinates of the entrance position. The entrance is indicated by yellow circle.</span>
             <form>
+              <label>
               Enter x coordinate: <input type="number" value={carPositionX} onChange={e => setCarPositionX(e.target.value)} placeholder="x coordinate"/>
-              <br/>
+              </label>
+              <label>
               Enter y coordinate: <input type="number" value={carPositionY} onChange={e => setCarPositionY(e.target.value)} placeholder="y coordinate"/>
-              <br/>
+              </label>
+
             </form>
-            <button onClick={() => setOpenEntrancePopup(false)}>Close</button>
+            <button onClick={() => setOpenEntrancePopup(false)} className='close-button'>Close</button>
           </Modal>
         </div>
       )}
@@ -409,13 +389,13 @@ function MapPage({isAdmin}) {
               <form onSubmit={handleBookingSubmit}>
                 Enter your email: <input type="email" value={emailAddress} onChange={e => setEmailAddress(e.target.value)} placeholder="Email"/>
                 <br/>
-                <button>Submit</button>
+                <button type="submit" className='submit-button'>Submit</button>
               </form>
               <button onClick={() => {
                 setShowBookingPopup(false);
                 setMessage('');
                 setEmailAddress('');
-              }}>Close</button>
+              }} className='close-button'>Close</button>
               <p>{message}</p>
             </Modal>
           </div>
