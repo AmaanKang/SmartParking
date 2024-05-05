@@ -233,7 +233,7 @@ function MapPage({isAdmin}) {
   }
 
   return (
-    <div>
+    <div className='map-page'>
       <h1>Parking Spots</h1>
       
       {isAdmin &&(

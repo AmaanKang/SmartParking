@@ -1,6 +1,7 @@
 import React from 'react';
 import QRCode from 'qrcode.react';
 import { signOut } from "firebase/auth";
+import './HomePage.css';
 
 function HomePage({isAdmin, setIsAdmin, onAuth}) {
   const baseUrl = window.location.origin;
@@ -18,26 +19,32 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
   }
 
   return (
-    <div>
+    <div className="home-page">
       <h1>Welcome to Our Parking Lot</h1>
       {!isAdmin && (
-          <div>
+          <div className='login-link'>
             <a href={loginUrl}>Login as Adminstrator</a> <br/>
           </div>
       )}
       {isAdmin && (
-          <div>
+          <div className='logout-button'>
             <button onClick={() => {
               logout();
             }}>Logout as Administrator</button> <br/>
           </div>
       )}
+      <div className='qr-code'>
       <p>Below is the QR code which can be printed and put at the front of the parking lot. Customers can scan this QR code and it will take them to the 
         map of the parking lot.
       </p>
+      </div>
+      
+      <div >
       <a href={url}>
         <QRCode value={url} />
       </a>
+      </div>
+      
     </div>
   );
 }

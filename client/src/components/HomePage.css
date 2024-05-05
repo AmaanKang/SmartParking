@@ -1,0 +1,23 @@
+.home-page{
+    text-align: center;
+    padding:5%;
+}
+
+.home-page h1{
+    color: #333;
+    margin-bottom: 5%;
+}
+
+.login-link a,
+.logout-button button{
+    background-color: #007BFF;
+    color: white;
+    margin: 3% 5%;
+    padding: 3% 5%;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.qr-code{
+    margin-top: 5%;
+}
