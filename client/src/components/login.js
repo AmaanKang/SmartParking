@@ -9,6 +9,7 @@ function Login({onAuth}){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [message, setMessage] = useState('');
 
     // When Login Submit button is clicked
     const login = async (email, password) => {
@@ -16,10 +17,11 @@ function Login({onAuth}){
             await signInWithEmailAndPassword(onAuth, email, password);
             setEmail('');
             setPassword('');
+            setMessage('');
             navigate('/home');
             return true;
         } catch (error) {
-            console.log(error);
+            setMessage("Invalid email or password!");
             return false;
         }
     }
@@ -51,6 +53,7 @@ function Login({onAuth}){
                 Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required/>
                 
                 </label>
+                <p style={{color:"red"}}>{message}</p>
                 <button type="submit">Login</button>
             </form>
         </div>

@@ -18,7 +18,7 @@ function MapPage({isAdmin}) {
     const [status, setStatus] = useState('free');
     const [openEntrancePopup, setOpenEntrancePopup] = useState(false);
     const [carPositionX, setCarPositionX] = useState(600);
-    const [carPositionY, setCarPositionY] = useState(500);
+    const [carPositionY, setCarPositionY] = useState(600);
     const [occupiedCount, setOccupiedCount] = useState(0);
     const [freeCount, setFreeCount] = useState(0);
     const [showBookingPopup, setShowBookingPopup] = useState(false);
@@ -207,29 +207,21 @@ function MapPage({isAdmin}) {
   // All below functions are used to handle the form submission and call the appropriate function
   function handleAddSubmit(e){
     e.preventDefault();
-    console.log(spotId);
-    console.log(subCol);
     addParkingSpot(spotId, subCol);
     closeAdminPopup('add');
   }
   function handleRemoveSubmit(e){
     e.preventDefault();
-    console.log(spotId);
-    console.log(subCol);
     removeParkingSpot(spotId, subCol);
     closeAdminPopup('remove');
   }
   function handleUpdateSubmit(e){
     e.preventDefault();
-    console.log(spotId);
-    console.log(subCol);
-    console.log(status);
     updateParkingSpot(spotId, subCol, status);
     closeAdminPopup('update');
   }
   function handleBookingSubmit(e){
     e.preventDefault();
-    console.log('Booking a parking spot');
     const bookingGet = getOneBooking(emailAddress);
   }
 
@@ -240,7 +232,10 @@ function MapPage({isAdmin}) {
       <a href={baseUrl}>Go to Home</a>
       </div>
       
-      {isAdmin &&(
+      {/**
+       * Below buttons will only show up if it is an admin logged into the application.
+       */
+      isAdmin &&(
         
         <div className="admin-link">
           
@@ -254,7 +249,10 @@ function MapPage({isAdmin}) {
         </div>
       )}
 
-      {showAddPopup && (
+      {/**
+       * The modals will show up depending on which button or hyperlink the admin clicks on
+       */
+      showAddPopup && (
         <div className='add-popup'>
           <Modal
           isOpen={showAddPopup}
@@ -265,7 +263,7 @@ function MapPage({isAdmin}) {
             <h2>Add Parking Spot</h2>
             <form onSubmit={handleAddSubmit}>
               <label>
-              Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/>
+              Enter Spot Id: <input type="text" value={spotId} onChange={e => setSpotId(e.target.value)} placeholder="Spot Id"/> i.e. A8
               </label>
              <label>
              Select column:
@@ -275,8 +273,9 @@ function MapPage({isAdmin}) {
               </select>
              </label>
               <button type="submit" className='submit-button'>Submit</button>
+              <button onClick={() => closeAdminPopup('add')} className='close-button'>Close</button>
             </form>
-            <button onClick={() => closeAdminPopup('add')} className='close-button'>Close</button>
+            
           </Modal>
         </div>
 
@@ -303,10 +302,8 @@ function MapPage({isAdmin}) {
               </select>
               </label>
               <button type="submit" className='submit-button'>Submit</button>
-
+              <button onClick={() => closeAdminPopup('remove')} className='close-button'>Close</button>
             </form>
-            <button onClick={() => closeAdminPopup('remove')} className='close-button'>Close</button>
-
           </Modal>
         </div>
       )}
@@ -340,10 +337,8 @@ function MapPage({isAdmin}) {
               </select>
               </label>
               <button type="submit" className='submit-button'>Submit</button>
-
+              <button onClick={() => closeAdminPopup('update')} className='close-button'>Close</button>
             </form>
-            <button onClick={() => closeAdminPopup('update')} className='close-button'>Close</button>
-
           </Modal>
           
         </div>
@@ -368,9 +363,8 @@ function MapPage({isAdmin}) {
               <label>
               Enter y coordinate: <input type="number" value={carPositionY} onChange={e => setCarPositionY(e.target.value)} placeholder="y coordinate"/>
               </label>
-
+              <button onClick={() => setOpenEntrancePopup(false)} className='close-button'>Close</button>
             </form>
-            <button onClick={() => setOpenEntrancePopup(false)} className='close-button'>Close</button>
           </Modal>
         </div>
       )}
@@ -395,12 +389,12 @@ function MapPage({isAdmin}) {
                 Enter your email: <input type="email" value={emailAddress} onChange={e => setEmailAddress(e.target.value)} placeholder="Email"/>
                 <br/>
                 <button type="submit" className='submit-button'>Submit</button>
-              </form>
-              <button onClick={() => {
+                <button onClick={() => {
                 setShowBookingPopup(false);
                 setMessage('');
                 setEmailAddress('');
               }} className='close-button'>Close</button>
+              </form>
               <p>{message}</p>
             </Modal>
           </div>
@@ -427,11 +421,18 @@ function MapPage({isAdmin}) {
             <Circle
                 x={carPositionX}
                 y={carPositionY}
-                radius={20}
+                radius={50}
                 fill='yellow'
                 stroke='black'
                 strokeWidth={2}
             />
+            <Text
+                  x={carPositionX-30}
+                  y={carPositionY}
+                  text='Entrance'
+                  fontSize={15}
+                  align='center'
+                />
         {parkingSpots.map((parkingSpot) => {
             // Parse the spot ID to get the row and column
             const column = parkingSpot.spotId.charCodeAt(0) - 'A'.charCodeAt(0);

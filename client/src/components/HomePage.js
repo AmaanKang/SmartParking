@@ -12,7 +12,6 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
   const logout = async () => {
     try {
       await signOut(onAuth);
-      setIsAdmin(false);
     } catch (error) {
       console.log('Error signing out:', error);
     }
@@ -21,6 +20,9 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
   return (
     <div className="home-page">
       <h1>Welcome to Our Parking Lot</h1>
+      {
+        /**Display the login or logout button depending on if the admin is logged in or logged out right now. */
+      }
       {!isAdmin && (
           <div className='login-link'>
             <a href={loginUrl}>Login as Adminstrator</a> <br/>
@@ -38,13 +40,11 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
         map of the parking lot.
       </p>
       </div>
-      
       <div >
       <a href={url}>
         <QRCode value={url} />
       </a>
       </div>
-      
     </div>
   );
 }
