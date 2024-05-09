@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Stage, Layer, Rect, Text, Circle} from 'react-konva';
 import './MapPage.css';
 import Modal from 'react-modal';
+import io from 'socket.io-client';
 
 // To make sure that the modals are having app root element as the actual parent
 Modal.setAppElement('#root');
@@ -55,6 +56,18 @@ function MapPage({isAdmin}) {
 
   // Calculate the nearest spot after any change in the parkingSpots array
   useEffect(() => {
+    // Get the updatedSpots from the parking lot based on the sensors data captured
+    const socket = io(baseUrl);
+
+    socket.on('update', (updatedSpots) => {
+      // Map the updated spots to the current spots
+      const updatedParkingSpots = parkingSpots.map(spot => {
+        const updatedSpot = updatedSpots.find(updatedSpot => updatedSpot.spotId === spot.spotId && updatedSpot.subColumn === spot.subColumn);
+        return updatedSpot ? updatedSpot : spot;
+      });
+      setParkingSpots(updatedParkingSpots);
+    });
+
     // Find the nearest free parking spot to the car
     let nearest = null;
     let minDistance = Infinity;
@@ -79,6 +92,12 @@ function MapPage({isAdmin}) {
     setOccupiedCount(occupied);
     setFreeCount(free);
     setNearestSpot(nearest);
+
+    // Disconnect the socket at the end of the function call
+    return () => {
+      socket.disconnect();
+    };
+
   },[parkingSpots,carPositionX,carPositionY]);
 
   // Add Parking Spot once the Add Parking Spot form is submitted
