@@ -46,16 +46,6 @@ function MapPage({isAdmin}) {
 
   // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
-      fetch('http://localhost:3000/api/parking-spots')
-      .then(response => response.json())
-      .then(data => {
-        setParkingSpots(data);
-      })
-      .then(getAllBookings());
-  },[]);
-
-  // Calculate the nearest spot after any change in the parkingSpots array
-  useEffect(() => {
     // Get the updatedSpots from the parking lot based on the sensors data captured
     const socket = io(baseUrl);
 
@@ -67,7 +57,21 @@ function MapPage({isAdmin}) {
       });
       setParkingSpots(updatedParkingSpots);
     });
+      fetch('http://localhost:3000/api/parking-spots')
+      .then(response => response.json())
+      .then(data => {
+        setParkingSpots(data);
+      })
+      .then(getAllBookings());
 
+      // Disconnect the socket at the end of the function call
+    return () => {
+      socket.disconnect();
+    };
+  },[]);
+
+  // Calculate the nearest spot after any change in the parkingSpots array
+  useEffect(() => {
     // Find the nearest free parking spot to the car
     let nearest = null;
     let minDistance = Infinity;
@@ -92,11 +96,6 @@ function MapPage({isAdmin}) {
     setOccupiedCount(occupied);
     setFreeCount(free);
     setNearestSpot(nearest);
-
-    // Disconnect the socket at the end of the function call
-    return () => {
-      socket.disconnect();
-    };
 
   },[parkingSpots,carPositionX,carPositionY]);
 

@@ -23,8 +23,8 @@ mongoose.connect(process.env.MONGODB_URI+'SmartParking', { useNewUrlParser: true
 
 
 const faker = require('faker');
-//const { getAllParkingSpots } = require('./controllers/parkingSpotController');
-//const parkingSpots = getAllParkingSpots();
+const { getAllParkingSpots } = require('./controllers/parkingSpotController');
+
 const http = require('http');
 const httpServer = http.createServer(app);
 
@@ -40,14 +40,15 @@ io.on('connection', (socket) => {
     console.log('a user connected');
 
     // Emit update events with randon sensor data every second
-    /**setInterval(() => {
-        const updatedSpots = parkingSpots.map(spot => ({
-            ...spot,
-            status: faker.random.arrayElement(['free', 'occupied']),
-          }));
-
-        socket.emit('update', updatedSpots);
-    }, 5000);*/
+    setInterval(() => {
+        getAllParkingSpots().then(parkingSpots => {
+            const updatedSpots = parkingSpots.map(spot => ({
+                ...spot,
+                status: faker.random.arrayElement(['free', 'occupied']),
+              }));
+            socket.emit('update', updatedSpots);
+        });
+    }, 5000);
 })
 
 
