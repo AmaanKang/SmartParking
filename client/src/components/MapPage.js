@@ -44,17 +44,21 @@ function MapPage({isAdmin}) {
       });
     }
 
+
   // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
+    console.log("On Map page socket");
     // Get the updatedSpots from the parking lot based on the sensors data captured
-    const socket = io(baseUrl);
+    const socket = io('http://localhost:3000');
 
     socket.on('update', (updatedSpots) => {
+      console.log("Inside map page socket");
       // Map the updated spots to the current spots
       const updatedParkingSpots = parkingSpots.map(spot => {
         const updatedSpot = updatedSpots.find(updatedSpot => updatedSpot.spotId === spot.spotId && updatedSpot.subColumn === spot.subColumn);
         return updatedSpot ? updatedSpot : spot;
       });
+      console.log(updatedParkingSpots);
       setParkingSpots(updatedParkingSpots);
     });
       fetch('http://localhost:3000/api/parking-spots')
@@ -70,8 +74,10 @@ function MapPage({isAdmin}) {
     };
   },[]);
 
+
   // Calculate the nearest spot after any change in the parkingSpots array
   useEffect(() => {
+    console.log("On Map page socket 2");
     // Find the nearest free parking spot to the car
     let nearest = null;
     let minDistance = Infinity;

@@ -14,10 +14,6 @@ mongoose.connect(process.env.MONGODB_URI+'SmartParking', { useNewUrlParser: true
 .then(() => {
     const parkingSpotRoutes = require('./routes/parkingSpotRoutes');
     app.use('/api/parking-spots',parkingSpotRoutes);
-
-    app.listen(3000, () => {
-        console.log('Server is running on port 3000');
-    });
 })
 .catch(err => console.error('Could not connect to MongoDB...', err));
 
@@ -49,6 +45,10 @@ io.on('connection', (socket) => {
             socket.emit('update', updatedSpots);
         });
     }, 5000);
-})
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
 
 
