@@ -17,16 +17,17 @@ mongoose.connect(process.env.MONGODB_URI+'SmartParking', { useNewUrlParser: true
 })
 .catch(err => console.error('Could not connect to MongoDB...', err));
 
-
+/**
+ * Below code is specially added to assist in the sockets connection
+ */
 const faker = require('faker');
 const { fetchAllParkingSpots } = require('./controllers/parkingSpotController');
 const ParkingSpot = require('./models/parkingSpot');
-
 const http = require('http');
 const httpServer = http.createServer(app);
 const socketIo = require('socket.io');
 
-// Program socket emitting on the server
+// Program socket IO by using the http server
 const io = socketIo(httpServer,{
     cors: {
         origin: "http://localhost:3001",
@@ -36,9 +37,9 @@ const io = socketIo(httpServer,{
 
 // When a client connects
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('A user connected');
 
-    // Emit update events with randon sensor data every second
+    // Emit update events with randon sensor data every minute
     setInterval(async() => {
         try {
             let parkingSpots = await fetchAllParkingSpots();
@@ -55,15 +56,16 @@ io.on('connection', (socket) => {
       
             // Fetch the updated spots from the database
             parkingSpots = await fetchAllParkingSpots();
-      
+            
+            // Emit the updated spots to the client
             socket.emit('update', parkingSpots);
         } catch (err) {
             console.log(err);
         }
-    }, 10000);
+    }, 60000);
 });
 
-
+// Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
 httpServer.listen(3000, () => {
     console.log('Server is running on port 3000');
 });

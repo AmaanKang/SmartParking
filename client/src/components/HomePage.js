@@ -2,6 +2,8 @@ import React from 'react';
 import QRCode from 'qrcode.react';
 import { signOut } from "firebase/auth";
 import './HomePage.css';
+// The image reference - https://images.adsttc.com/media/images/61f8/7e55/3e4b/3159/ff00/0053/large_jpg/image_via_parking_industry.jpg?1643675216
+import backgroundImage from './images/a_parking_lot.jpg';
 
 function HomePage({isAdmin, setIsAdmin, onAuth}) {
   const baseUrl = window.location.origin;
@@ -35,6 +37,9 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
             }}>Logout as Administrator</a> <br/>
           </div>
       )}
+      <div className='picture'>
+        <img src={backgroundImage}/>
+      </div>
       <div className='qr-code'>
       <p>Below is the QR code which can be printed and put at the front of the parking lot. Customers can scan this QR code and it will take them to the 
         map of the parking lot.

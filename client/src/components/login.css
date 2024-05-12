@@ -1,6 +1,7 @@
 .login-page{
     text-align: center;
     padding:5%;
+    padding-top: 0;
 }
 
 .login-page h1{
@@ -29,4 +30,8 @@
     border-radius: 1%;
     cursor: pointer;
     font-size: 100%;
+}
+
+.picture{
+    margin-top: 5%;
 }

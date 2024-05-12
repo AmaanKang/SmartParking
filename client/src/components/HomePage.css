@@ -1,6 +1,7 @@
 .home-page{
     text-align: center;
     padding:5%;
+    padding-top: 0;
 }
 
 .home-page h1{
@@ -8,9 +9,12 @@
     margin-bottom: 5%;
 }
 
+.picture{
+    margin-top: 5%;
+}
+
 .login-link a,
 .logout-link a{
-    
     color: white;
     padding: 2% 4%;
     border-radius: 1%;

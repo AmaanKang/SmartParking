@@ -9,6 +9,7 @@ Modal.setAppElement('#root');
 
 function MapPage({isAdmin}) {
   const baseUrl = window.location.origin;
+  const serverUrl = 'http://localhost:3000';
     const [nearestSpot, setNearestSpot] = useState(null);
     const [parkingSpots, setParkingSpots] = useState([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
@@ -37,7 +38,7 @@ function MapPage({isAdmin}) {
     
     // Access all bookings saved in database. These bookings consist of the registrations that customers have made before coming to parking lot
     function getAllBookings(){
-      fetch('http://localhost:3000/api/parking-spots/user')
+      fetch(serverUrl + '/api/parking-spots/user')
       .then(response => response.json())
       .then(data => {
         setBookings(data);
@@ -46,15 +47,14 @@ function MapPage({isAdmin}) {
 
   // The spots are fetched from backend every time there is a change on the page
   useEffect(() => {
-    // Get the updatedSpots from the parking lot based on the sensors data captured
-    const socket = io('http://localhost:3000');
-
+    // Get the updatedSpots from the server based on the sensors data captured
+    const socket = io(serverUrl);
 
     socket.on('update', (updatedSpots) => {
       console.log("Inside map page socket");
       setParkingSpots(updatedSpots);
     });
-      fetch('http://localhost:3000/api/parking-spots')
+      fetch(serverUrl + '/api/parking-spots')
       .then(response => response.json())
       .then(data => {
         setParkingSpots(data);
@@ -99,7 +99,7 @@ function MapPage({isAdmin}) {
 
   // Add Parking Spot once the Add Parking Spot form is submitted
   function addParkingSpot(spotId, subCol){
-    fetch('http://localhost:3000/api/parking-spots/admin/add', {
+    fetch(serverUrl + '/api/parking-spots/admin/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ function MapPage({isAdmin}) {
 
   // Delete the Parking Spot once the Delete Parking Spot form is submitted
   function removeParkingSpot(spotId, subCol){
-    fetch('http://localhost:3000/api/parking-spots/admin/delete', {
+    fetch(serverUrl + '/api/parking-spots/admin/delete', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ function MapPage({isAdmin}) {
 
   // Update the status of a parking spot based on the request sent
   function updateParkingSpot(spotId, subCol, status){
-    fetch('http://localhost:3000/api/parking-spots/admin/update', {
+    fetch(serverUrl + '/api/parking-spots/admin/update', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ function MapPage({isAdmin}) {
 
   // Access one booking based on the email address that user has entered
   function getOneBooking(emailAddress){
-    fetch('http://localhost:3000/api/parking-spots/user/'+emailAddress)
+    fetch(serverUrl + '/api/parking-spots/user/'+emailAddress)
     .then(response => response.json())
     .then(data => {
       if(data != null){
@@ -266,7 +266,7 @@ function MapPage({isAdmin}) {
       )}
 
       {/**
-       * The modals will show up depending on which button or hyperlink the admin clicks on
+       * The below modals will show up depending on which button or hyperlink the admin clicks on
        */
       showAddPopup && (
         <div className='add-popup'>

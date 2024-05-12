@@ -4,6 +4,8 @@ import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import React, { useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import './login.css';
+// The image reference - https://images.adsttc.com/media/images/61f8/7e55/3e4b/3159/ff00/0053/large_jpg/image_via_parking_industry.jpg?1643675216
+import backgroundImage from './images/a_parking_lot.jpg';
 
 function Login({onAuth}){
     const [email, setEmail] = useState('');
@@ -56,6 +58,9 @@ function Login({onAuth}){
                 <p style={{color:"red"}}>{message}</p>
                 <button type="submit">Login</button>
             </form>
+            <div className='picture'>
+                <img src={backgroundImage}/>
+            </div>
         </div>
     )
 }
