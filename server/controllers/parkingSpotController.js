@@ -1,12 +1,22 @@
 const ParkingSpot = require('../models/parkingSpot');
 
+// Fetch all parking spots
+exports.fetchAllParkingSpots = async () => {
+    try {
+      // Fetch data from the database
+      const parkingSpots = await ParkingSpot.find();
+      return parkingSpots;
+    } catch (err) {
+      throw err;
+    }
+  };
+
 // Get all parking spots in a lot
 exports.getAllParkingSpots = async(req, res) => {
     try{
-        const parkingSpots = await ParkingSpot.find();
+        const parkingSpots = await exports.fetchAllParkingSpots();
         res.json(parkingSpots);
     } catch(err){
-        console.log(err);
         res.status(500).json({message: err.message});
     }
 };
