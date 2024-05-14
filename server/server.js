@@ -65,6 +65,22 @@ io.on('connection', (socket) => {
     }, 60000);
 });
 
+// The below code helps in setting up a job thats runs every hour to check the number of occupied spots in the lot
+const cron = require('node-cron');
+const WeeklyData = require('./models/weeklyData');
+
+cron.schedule('* * * * *', async () => {
+    try {
+        let parkingSpots = await fetchAllParkingSpots();
+        const occupiedSpots = parkingSpots.filter(spot => spot.status === 'occupied').length;
+        console.log(`Number of occupied spots: ${occupiedSpots}`);
+        // TO DO: Save the weekly data
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+
 // Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
 httpServer.listen(3000, () => {
     console.log('Server is running on port 3000');
