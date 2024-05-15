@@ -75,6 +75,46 @@ cron.schedule('* * * * *', async () => {
         const occupiedSpots = parkingSpots.filter(spot => spot.status === 'occupied').length;
         console.log(`Number of occupied spots: ${occupiedSpots}`);
         // TO DO: Save the weekly data
+        const todaysDate = new Date();
+        const day = todaysDate.getDay();
+        const hour = todaysDate.getHours().toString();
+        console.log(day);
+        console.log(hour);
+        const updatedData = await WeeklyData.findOneAndUpdate(
+            {dayId: day},
+            {[`${hour}`]: occupiedSpots},
+            {new: true}
+        );
+        console.log(updatedData[`${hour}`]);
+        const allData = await WeeklyData.find();
+        let sum = 0;
+        for(let j=0; j<7; j++){
+            sum += allData[j][`${hour}`];
+        }
+        const hourlyAverage = await WeeklyData.findOneAndUpdate(
+            {dayId: 7},
+            {[`${hour}`]: sum/7},
+            {new: true}
+        );
+        console.log(hourlyAverage[`${hour}`]);
+        let maxAvg = -1;
+        let minAvg = 10000000;
+        let maxHour = 0;
+        let minHour = 0;
+        for(let i=1; i<=24; i++){
+            const hourAvg = allData[7][`${i}`];
+            if(hourAvg > maxAvg){
+                maxAvg = hourAvg;
+                maxHour = i;
+            }
+            if(hourAvg < minAvg){
+                minAvg = hourAvg;
+                minHour = i;
+            }
+        }
+        console.log("Most Busy: " + maxHour);
+        console.log("Min Busy: "+ minHour);
+        
     } catch (err) {
         console.log(err);
     }
