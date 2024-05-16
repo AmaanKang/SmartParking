@@ -14,16 +14,19 @@
 }
 
 .login-link a,
-.logout-link a{
+.logout-link a,
+.analytics-link a{
     color: white;
     padding: 2% 4%;
     border-radius: 1%;
     cursor: pointer;
     font-size: 100%;
     text-decoration: none;
+    margin-left:2%;
 }
 
-.login-link a{
+.login-link a,
+.analytics-link a{
     background-color: #007BFF;
 }
 

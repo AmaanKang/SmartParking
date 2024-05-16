@@ -9,6 +9,7 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
   const baseUrl = window.location.origin;
   const url = baseUrl + '/map';
   const loginUrl = baseUrl + '/login';
+  const analyticsUrl = baseUrl + '/analytics';
 
   // When the logout button is clicked
   const logout = async () => {
@@ -31,11 +32,17 @@ function HomePage({isAdmin, setIsAdmin, onAuth}) {
           </div>
       )}
       {isAdmin && (
-          <div className='logout-link'>
+        <div>
+          <span className='logout-link'>
             <a onClick={() => {
               logout();
-            }}>Logout as Administrator</a> <br/>
-          </div>
+            }}>Logout as Administrator</a>
+          </span>
+          <span className='analytics-link'>
+            <a href={analyticsUrl}>Check Parking Lot Analytics</a>
+          </span>
+        </div>
+          
       )}
       <div className='picture'>
         <img src={backgroundImage}/>

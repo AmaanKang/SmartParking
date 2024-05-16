@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './components/HomePage.js';
 import MapPage from './components/MapPage.js';
 import Login from './components/login.js';
+import Analytics from './components/Analytics.js';
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged} from "firebase/auth";
 
@@ -44,6 +45,7 @@ function App() {
         <Route path="/home" element={<HomePage isAdmin={isAdmin} setIsAdmin={setIsAdmin} onAuth={auth}/>} />
         <Route path="/map" element={<MapPage isAdmin={isAdmin}/>} />
         <Route path="/login" element={<Login onAuth={auth} />}/>
+        <Route path="/analytics" element={<Analytics onAuth={auth} />}/>
       </Routes>
     </Router>
   );

@@ -69,34 +69,43 @@ io.on('connection', (socket) => {
 const cron = require('node-cron');
 const WeeklyData = require('./models/weeklyData');
 
+// Setup the job scheduler 
 cron.schedule('* * * * *', async () => {
     try {
+        // Fetch parking spots to see how many are occupied at this time
         let parkingSpots = await fetchAllParkingSpots();
         const occupiedSpots = parkingSpots.filter(spot => spot.status === 'occupied').length;
         console.log(`Number of occupied spots: ${occupiedSpots}`);
-        // TO DO: Save the weekly data
+
+        // Find todays date and day and hour
         const todaysDate = new Date();
         const day = todaysDate.getDay();
         const hour = todaysDate.getHours().toString();
-        console.log(day);
-        console.log(hour);
+
+        // Set the todays day/hour with the current occupied spots
         const updatedData = await WeeklyData.findOneAndUpdate(
             {dayId: day},
             {[`${hour}`]: occupiedSpots},
             {new: true}
         );
         console.log(updatedData[`${hour}`]);
+
+        // Get the whole week's data and find sum of the occupied spots at current hour of the day. Example - This adds the filled spots at 1 pm each of the 7 days.
         const allData = await WeeklyData.find();
         let sum = 0;
         for(let j=0; j<7; j++){
             sum += allData[j][`${hour}`];
         }
+
+        // Set the average of the spots across 7 days in the database
         const hourlyAverage = await WeeklyData.findOneAndUpdate(
             {dayId: 7},
             {[`${hour}`]: sum/7},
             {new: true}
         );
         console.log(hourlyAverage[`${hour}`]);
+
+        // Loop through the averages recorded for each hour of the day and find the busiest hour and the least busy hour
         let maxAvg = -1;
         let minAvg = 10000000;
         let maxHour = 0;
