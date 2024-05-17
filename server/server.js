@@ -17,57 +17,13 @@ mongoose.connect(process.env.MONGODB_URI+'SmartParking', { useNewUrlParser: true
 })
 .catch(err => console.error('Could not connect to MongoDB...', err));
 
-/**
- * Below code is specially added to assist in the sockets connection
- */
-const faker = require('faker');
-const { fetchAllParkingSpots } = require('./controllers/parkingSpotController');
-const ParkingSpot = require('./models/parkingSpot');
-const http = require('http');
-const httpServer = http.createServer(app);
-const socketIo = require('socket.io');
-
-// Program socket IO by using the http server
-const io = socketIo(httpServer,{
-    cors: {
-        origin: "http://localhost:3001",
-        methods: ["GET", "POST"]
-      }
-});
-
-// When a client connects
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    // Emit update events with randon sensor data every minute
-    setInterval(async() => {
-        try {
-            let parkingSpots = await fetchAllParkingSpots();
-            const updatedSpots = parkingSpots.map(spot => {
-              spot.status = faker.random.arrayElement(['free', 'occupied']);
-              //await spot.save();
-              return spot;
-            });
-      
-            // Save the updated spots to the database
-            for (let spot of updatedSpots) {
-              await ParkingSpot.updateOne({ _id: spot._id }, {status: spot.status});
-            }
-      
-            // Fetch the updated spots from the database
-            parkingSpots = await fetchAllParkingSpots();
-            
-            // Emit the updated spots to the client
-            socket.emit('update', parkingSpots);
-        } catch (err) {
-            console.log(err);
-        }
-    }, 60000);
-});
-
 // The below code helps in setting up a job thats runs every hour to check the number of occupied spots in the lot
 const cron = require('node-cron');
 const WeeklyData = require('./models/weeklyData');
+let maxAvg = -1;
+let minAvg = 10000000;
+let maxHour = 0;
+let minHour = 0;
 
 // Setup the job scheduler 
 cron.schedule('* * * * *', async () => {
@@ -106,10 +62,6 @@ cron.schedule('* * * * *', async () => {
         console.log(hourlyAverage[`${hour}`]);
 
         // Loop through the averages recorded for each hour of the day and find the busiest hour and the least busy hour
-        let maxAvg = -1;
-        let minAvg = 10000000;
-        let maxHour = 0;
-        let minHour = 0;
         for(let i=1; i<=24; i++){
             const hourAvg = allData[7][`${i}`];
             if(hourAvg > maxAvg){
@@ -128,6 +80,57 @@ cron.schedule('* * * * *', async () => {
         console.log(err);
     }
 });
+
+/**
+ * Below code is specially added to assist in the sockets connection
+ */
+const faker = require('faker');
+const { fetchAllParkingSpots } = require('./controllers/parkingSpotController');
+const ParkingSpot = require('./models/parkingSpot');
+const http = require('http');
+const httpServer = http.createServer(app);
+const socketIo = require('socket.io');
+
+// Program socket IO by using the http server
+const io = socketIo(httpServer,{
+    cors: {
+        origin: "http://localhost:3001",
+        methods: ["GET", "POST"]
+      }
+});
+
+// When a client connects
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    // Emit update events with randon sensor data every minute
+    setInterval(async() => {
+        try {
+            let parkingSpots = await fetchAllParkingSpots();
+            const updatedSpots = parkingSpots.map(spot => {
+              spot.status = faker.random.arrayElement(['free', 'occupied']);
+              return spot;
+            });
+      
+            // Save the updated spots to the database
+            for (let spot of updatedSpots) {
+              await ParkingSpot.updateOne({ _id: spot._id }, {status: spot.status});
+            }
+      
+            // Fetch the updated spots from the database
+            parkingSpots = await fetchAllParkingSpots();
+            
+            // Emit the updated spots to the client
+            socket.emit('update', parkingSpots);
+
+            // Emit the analytics
+            socket.emit('analytics',[maxHour,minHour]);
+        } catch (err) {
+            console.log(err);
+        }
+    }, 60000);
+});
+
 
 
 // Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
