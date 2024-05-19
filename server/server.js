@@ -24,6 +24,7 @@ let maxAvg = -1;
 let minAvg = 10000000;
 let maxHour = 0;
 let minHour = 0;
+let hourlyAverage = null;
 
 // Setup the job scheduler 
 cron.schedule('* * * * *', async () => {
@@ -54,7 +55,7 @@ cron.schedule('* * * * *', async () => {
         }
 
         // Set the average of the spots across 7 days in the database
-        const hourlyAverage = await WeeklyData.findOneAndUpdate(
+        hourlyAverage = await WeeklyData.findOneAndUpdate(
             {dayId: 7},
             {[`${hour}`]: sum/7},
             {new: true}
@@ -122,16 +123,16 @@ io.on('connection', (socket) => {
             
             // Emit the updated spots to the client
             socket.emit('update', parkingSpots);
-
-            // Emit the analytics
-            socket.emit('analytics',[maxHour,minHour]);
         } catch (err) {
             console.log(err);
         }
     }, 60000);
+
+    // Emit the analytics data every 10 seconds
+    setInterval(() => {
+        socket.emit('analytics', [maxHour, minHour]);
+    }, 60000);
 });
-
-
 
 // Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
 httpServer.listen(3000, () => {

@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { getAllParkingSpots, addParkingSpot, removeParkingSpot, updateParkingSpot } = require('../controllers/parkingSpotController');
 const { getAllBookings, addBooking, getOneBooking } = require('../controllers/bookingController');
+const { getWeeklyData } = require('../controllers/weeklyDataController');
 const isAdmin = require('./middleware');
-const parkingSpot = require('../models/parkingSpot');
+const ParkingSpot = require('../models/parkingSpot');
 
 // Route to get all parking spots
 router.get('/', getAllParkingSpots);
@@ -13,6 +14,7 @@ router.get('/', getAllParkingSpots);
 router.post('/admin/add/', addParkingSpot);
 router.delete('/admin/delete/', removeParkingSpot);
 router.put('/admin/update/', updateParkingSpot);
+router.get('/admin/analytics/', getWeeklyData);
 
 // User routes
 router.get('/user/', getAllBookings);
