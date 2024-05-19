@@ -32,7 +32,6 @@ cron.schedule('* * * * *', async () => {
         // Fetch parking spots to see how many are occupied at this time
         let parkingSpots = await fetchAllParkingSpots();
         const occupiedSpots = parkingSpots.filter(spot => spot.status === 'occupied').length;
-        console.log(`Number of occupied spots: ${occupiedSpots}`);
 
         // Find todays date and day and hour
         const todaysDate = new Date();
@@ -45,7 +44,6 @@ cron.schedule('* * * * *', async () => {
             {[`${hour}`]: occupiedSpots},
             {new: true}
         );
-        console.log(updatedData[`${hour}`]);
 
         // Get the whole week's data and find sum of the occupied spots at current hour of the day. Example - This adds the filled spots at 1 pm each of the 7 days.
         const allData = await WeeklyData.find();
@@ -60,7 +58,6 @@ cron.schedule('* * * * *', async () => {
             {[`${hour}`]: sum/7},
             {new: true}
         );
-        console.log(hourlyAverage[`${hour}`]);
 
         // Loop through the averages recorded for each hour of the day and find the busiest hour and the least busy hour
         for(let i=1; i<=24; i++){
@@ -74,9 +71,6 @@ cron.schedule('* * * * *', async () => {
                 minHour = i;
             }
         }
-        console.log("Most Busy: " + maxHour);
-        console.log("Min Busy: "+ minHour);
-        
     } catch (err) {
         console.log(err);
     }
@@ -126,11 +120,6 @@ io.on('connection', (socket) => {
         } catch (err) {
             console.log(err);
         }
-    }, 60000);
-
-    // Emit the analytics data every 10 seconds
-    setInterval(() => {
-        socket.emit('analytics', [maxHour, minHour]);
     }, 60000);
 });
 

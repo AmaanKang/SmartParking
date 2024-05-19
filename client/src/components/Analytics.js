@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import { Bar } from 'react-chartjs-2';
+// Import Chart.js component too since only Bar component won't work for the graph
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,7 +13,6 @@ import {
   } from 'chart.js';
 
 function Analytics({onAuth}){
-    const [analyticsArray, setAnalyticsArray] = useState([]);
     const [hourlyAverage, setHourlyAverage] = useState([]);
 
     useEffect(() => {
@@ -27,17 +27,9 @@ function Analytics({onAuth}){
             }  
             setHourlyAverage(hourlyAvg);      
         });
-
-        const socket = io('http://localhost:3000');
-        socket.on('analytics', (analytics) => {
-            console.log("Inside analytics page socket");
-            setAnalyticsArray(analytics);
-          });
-          return () => {
-            socket.disconnect();
-          };
     },[]);
 
+    // Register all chart.js properties to the Chart object
     ChartJS.register(
         CategoryScale,
         LinearScale,
@@ -47,6 +39,7 @@ function Analytics({onAuth}){
         Legend
       );
       
+    // Below options will be used in the Bar component when rendered on page
     const options = {
         responsive: true,
         plugins: {
@@ -65,8 +58,6 @@ function Analytics({onAuth}){
              <h1>Parking Lot Analytics</h1>
             {(onAuth) && (
                 <div>
-                    <p>Most busy hour: {analyticsArray[0]}</p>
-                    <p>Least busy hour: {analyticsArray[1]}</p>
                     <Bar
                     key={Math.random()}
                     data={{
