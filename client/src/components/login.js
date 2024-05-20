@@ -12,6 +12,7 @@ function Login({onAuth}){
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
+    const baseUrl = window.location.origin;
 
     // When Login Submit button is clicked
     const login = async (email, password) => {
@@ -58,6 +59,9 @@ function Login({onAuth}){
                 <p style={{color:"red"}}>{message}</p>
                 <button type="submit">Login</button>
             </form>
+            <div className='home-link'>
+                <a href={baseUrl}>Go to Home</a>
+                </div>
             <div className='picture'>
                 <img src={backgroundImage}/>
             </div>

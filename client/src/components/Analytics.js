@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
 import { Bar } from 'react-chartjs-2';
 // Import Chart.js component too since only Bar component won't work for the graph
 import {
@@ -12,8 +11,9 @@ import {
     Legend,
   } from 'chart.js';
 
-function Analytics({onAuth}){
+function Analytics({isAdmin}){
     const [hourlyAverage, setHourlyAverage] = useState([]);
+    const baseUrl = window.location.origin;
 
     useEffect(() => {
         // Fetch the averages from the database. There is no need to use sockets to get this from server. The server does calculations and store it in the database.
@@ -54,10 +54,13 @@ function Analytics({onAuth}){
     };
 
     return (
-        <div>
+        <div className='analytics-page'>
              <h1>Parking Lot Analytics</h1>
-            {(onAuth) && (
+            {(isAdmin) && (
                 <div>
+                <div className='home-link'>
+                <a href={baseUrl}>Go to Home</a>
+                </div>
                     <Bar
                     key={Math.random()}
                     data={{

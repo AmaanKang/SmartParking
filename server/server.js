@@ -27,7 +27,7 @@ let minHour = 0;
 let hourlyAverage = null;
 
 // Setup the job scheduler 
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 * * * *', async () => {
     try {
         // Fetch parking spots to see how many are occupied at this time
         let parkingSpots = await fetchAllParkingSpots();

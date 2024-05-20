@@ -45,7 +45,7 @@ function App() {
         <Route path="/home" element={<HomePage isAdmin={isAdmin} setIsAdmin={setIsAdmin} onAuth={auth}/>} />
         <Route path="/map" element={<MapPage isAdmin={isAdmin}/>} />
         <Route path="/login" element={<Login onAuth={auth} />}/>
-        <Route path="/analytics" element={<Analytics onAuth={auth} />}/>
+        <Route path="/analytics" element={<Analytics isAdmin={isAdmin} />}/>
       </Routes>
     </Router>
   );
