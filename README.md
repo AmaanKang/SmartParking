@@ -8,9 +8,17 @@ The driver can decide to view the available parking on their own through app or 
 # Features
 
 - Any client entering into the parking spot will have access to QR code to scan and view the parking lot. This will show all occupied spots in red and free spots in white. The nearest parking spot is shown in green on the page.
+![image](https://github.com/AmaanKang/SmartParking/assets/77933148/8732e166-631f-4c61-99fd-53cd5b28ffa2)
+
 - The app also includes an admin side. On the Home page, the admins can login with a username and password.
+![image](https://github.com/AmaanKang/SmartParking/assets/77933148/b99cada4-221a-4f10-ad35-1a5763f6a558)
+
 - This provides admins an extra button on the home page to view the parking spot analytics. The analytics include graphical view of the average occupied spots per hour in last week.
+![image](https://github.com/AmaanKang/SmartParking/assets/77933148/735ca38f-a6e6-4967-b33c-a5c9abd5ddf4)
+
 - The admins can also see four different buttons on the Map Page. These buttons assist them in adding new parking spot, deleting a current parking spot, updating the status of the free/occupied spot and changing the entrance of the parking lot since the suggested parking spot is based on entrance distance.
+![image](https://github.com/AmaanKang/SmartParking/assets/77933148/a80be47d-7513-428b-8b53-371536bacd0b)
+
 
 # Upcoming Features
 
