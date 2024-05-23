@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 
 # Load the data
-data = pd.read_csv('parking_lot_data.csv')
+data = pd.read_csv('parking_lot_data.csv') 
 
 # Preprocess the data
 data['timestamp'] = pd.to_datetime(data['timestamp'])
