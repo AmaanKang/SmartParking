@@ -29,6 +29,7 @@ let hourlyAverage = null;
 // Setup the job scheduler 
 cron.schedule('0 * * * *', async () => {
     try {
+        console.log('Jon run');
         // Fetch parking spots to see how many are occupied at this time
         let parkingSpots = await fetchAllParkingSpots();
         const occupiedSpots = parkingSpots.filter(spot => spot.status === 'occupied').length;
