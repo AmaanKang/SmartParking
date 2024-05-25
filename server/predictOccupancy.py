@@ -6,6 +6,7 @@ import joblib
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # Create a connection to the MongoDB database

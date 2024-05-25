@@ -124,9 +124,23 @@ io.on('connection', (socket) => {
     }, 60000);
 });
 
+// The below code will run the python file for the predictions
+const {spawn} = require('child_process');
+port = 3000;
+
 // Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
-httpServer.listen(3000, () => {
+httpServer.listen(port, () => {
     console.log('Server is running on port 3000');
+    const python = spawn('python',['predictOccupancy.py']);
+    python.stdout.on('data',(data) => {
+        console.log(`stdout: ${data}`);
+    });
+    python.stderr.on('data',(data) => {
+        console.log(`stderr: ${data}`);
+    });
+    python.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
 });
 
 
