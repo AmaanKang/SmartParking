@@ -20,20 +20,26 @@ cursor = db['weeklydatas'].find()
 # Convert data to pandas dataframe
 data = pd.DataFrame(list(cursor))
 
-# Preprocess the data
-data['timestamp'] = pd.to_datetime(data['timestamp'])
-data['hour'] = data['timestamp'].dt.hour
-data['day_of_week'] = data['timestamp'].dt.dayofweek
+# Reshape the data
+data_melted = data.melt(id_vars=['_id','dayId'], var_name='hour', value_name='occupied_spots')
+
+# COnvert the hour column to numeric
+data_melted['hour'] = pd.to_numeric(data_melted['hour'])
+
+# Create a day_of_week column
+data_melted['day_of_week'] = data_melted.index // 24
+
+print(data_melted)
 
 # Split the data into features and target
-X = data[['hour', 'day_of_week']]
-y = data['occupied_spots']
+X = data_melted[['hour', 'day_of_week']]
+y = data_melted['occupied_spots']
 
 # Split the data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train the model
-model = RandomForestRegressor(n_estimators=100, random_state=42)
+model = RandomForestRegressor(n_estimators=10, random_state=42)
 model.fit(X_train, y_train)
 
 # Evaluate the model
@@ -45,3 +51,5 @@ print(f'Mean Absolute Error: {mae}')
 future_data = pd.DataFrame({'hour': [10], 'day_of_week': [3]})
 future_prediction = model.predict(future_data)
 print(f'Predicted occupied spots: {future_prediction[0]}')
+
+
