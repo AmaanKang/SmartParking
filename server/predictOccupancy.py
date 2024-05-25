@@ -2,9 +2,23 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
+from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
 
-# Load the data
-data = pd.read_csv('parking_lot_data.csv') 
+load_dotenv()
+
+# Create a connection to the MongoDB database
+client = MongoClient(os.getenv('MONGODB_URI'))
+
+# Connect to the database
+db = client['SmartParking']
+
+# Fetch data from the collection
+cursor = db['weeklydatas'].find()
+
+# Convert data to pandas dataframe
+data = pd.DataFrame(list(cursor))
 
 # Preprocess the data
 data['timestamp'] = pd.to_datetime(data['timestamp'])
