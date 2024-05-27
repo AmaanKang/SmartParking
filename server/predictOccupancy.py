@@ -56,9 +56,14 @@ predictions = model.predict(X_test)
 mae = mean_absolute_error(y_test, predictions)
 print(f'Mean Absolute Error: {mae}')
 
-# Use the model to make predictions
-future_data = pd.DataFrame({'hour': [10], 'day_of_week': [3]})
-future_prediction = model.predict(future_data)
-print(f'Predicted occupied spots: {future_prediction[0]}')
+future_predictions = []
+# Use the model to make predictions for the next week
+for i in range(0,6):
+    for j in range(1,24):
+        future_data = pd.DataFrame({'hour': [j], 'day_of_week': [i]})
+        future_prediction = model.predict(future_data)
+        future_predictions.append(future_prediction[0])
+        j += 1
+    i += 1
 
-
+print(f'Predicted occupied spots: {future_predictions.count}')

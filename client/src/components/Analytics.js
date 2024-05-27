@@ -61,7 +61,7 @@ function Analytics({isAdmin}){
                 <div className='home-link'>
                 <a href={baseUrl}>Go to Home</a>
                 </div>
-                    <Bar
+                <Bar
                     key={Math.random()}
                     data={{
                         labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'],
@@ -76,8 +76,10 @@ function Analytics({isAdmin}){
                         ],
                     }}
                     options={options}
-                    />
-                </div>  
+                />
+                <h2>Predictions for the next week</h2>
+                <p>(Note that the predictions are calculated every Sunday morning)</p>
+                </div>
             )}
         </div>
     );

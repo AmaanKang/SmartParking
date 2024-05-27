@@ -29,7 +29,7 @@ let hourlyAverage = null;
 // Setup the job scheduler 
 cron.schedule('0 * * * *', async () => {
     try {
-        console.log('Jon run');
+        console.log('Job run');
         // Fetch parking spots to see how many are occupied at this time
         let parkingSpots = await fetchAllParkingSpots();
         const occupiedSpots = parkingSpots.filter(spot => spot.status === 'occupied').length;
@@ -77,6 +77,30 @@ cron.schedule('0 * * * *', async () => {
     }
 });
 
+// The below code will run the python file for the predictions
+const {spawn} = require('child_process');
+port = 3000;
+let predictions = '';
+
+// Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
+httpServer.listen(port, () => {
+    console.log('Server is running on port 3000');
+
+    cron.schedule('* * * * *',() => {
+        const python = spawn('python',['predictOccupancy.py']);
+        python.stdout.on('data',(data) => {
+            predictions = data;
+            console.log(`stdout: ${data}`);
+        });
+        python.stderr.on('data',(data) => {
+            console.log(`stderr: ${data}`);
+        });
+        python.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+    });
+});
+
 /**
  * Below code is specially added to assist in the sockets connection
  */
@@ -122,25 +146,14 @@ io.on('connection', (socket) => {
             console.log(err);
         }
     }, 60000);
-});
 
-// The below code will run the python file for the predictions
-const {spawn} = require('child_process');
-port = 3000;
-
-// Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
-httpServer.listen(port, () => {
-    console.log('Server is running on port 3000');
-    const python = spawn('python',['predictOccupancy.py']);
-    python.stdout.on('data',(data) => {
-        console.log(`stdout: ${data}`);
-    });
-    python.stderr.on('data',(data) => {
-        console.log(`stderr: ${data}`);
-    });
-    python.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-    });
+    setInterval(async() => {
+        try{
+            socket.emit('predictions',predictions);
+        } catch  (err){
+            console.log(err);
+        }
+    })
 });
 
 
