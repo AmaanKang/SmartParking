@@ -77,29 +77,6 @@ cron.schedule('0 * * * *', async () => {
     }
 });
 
-// The below code will run the python file for the predictions
-const {spawn} = require('child_process');
-port = 3000;
-let predictions = '';
-
-// Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
-httpServer.listen(port, () => {
-    console.log('Server is running on port 3000');
-
-    cron.schedule('* * * * *',() => {
-        const python = spawn('python',['predictOccupancy.py']);
-        python.stdout.on('data',(data) => {
-            predictions = data;
-            console.log(`stdout: ${data}`);
-        });
-        python.stderr.on('data',(data) => {
-            console.log(`stderr: ${data}`);
-        });
-        python.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-        });
-    });
-});
 
 /**
  * Below code is specially added to assist in the sockets connection
@@ -107,9 +84,9 @@ httpServer.listen(port, () => {
 const faker = require('faker');
 const { fetchAllParkingSpots } = require('./controllers/parkingSpotController');
 const ParkingSpot = require('./models/parkingSpot');
+const socketIo = require('socket.io');
 const http = require('http');
 const httpServer = http.createServer(app);
-const socketIo = require('socket.io');
 
 // Program socket IO by using the http server
 const io = socketIo(httpServer,{
@@ -146,14 +123,48 @@ io.on('connection', (socket) => {
             console.log(err);
         }
     }, 60000);
-
-    setInterval(async() => {
-        try{
-            socket.emit('predictions',predictions);
-        } catch  (err){
-            console.log(err);
-        }
-    })
 });
+
+/** 
+ * The below code will run the python file for the predictions
+ */
+const {spawn} = require('child_process');
+port = 3000;
+let predictions = [];
+const fs = require('fs');
+
+// Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
+httpServer.listen(port, () => {
+    console.log('Server is running on port 3000');
+
+    cron.schedule('* * * * *',() => {
+        const python = spawn('python',['predictOccupancy.py']);
+        python.stdout.on('data',(data) => {
+            console.log(`stdout: ${data}`);
+            fs.readFile('future_predictions.json', 'utf8', (err, data) => {
+                if(err) {
+                    console.log(err);
+                    return
+                }
+                else{
+                    predictions = JSON.parse(data);
+
+                    // When a client connects from analytics page
+                    io.on('connection', (socket) => {
+                        console.log('A user connected');
+                        socket.emit('predictions',predictions);
+                    });
+                }
+            });
+        });
+        python.stderr.on('data',(data) => {
+            console.log(`stderr: ${data}`);
+        });
+        python.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+    });
+});
+
 
 

@@ -6,6 +6,7 @@ import joblib
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -58,12 +59,15 @@ print(f'Mean Absolute Error: {mae}')
 
 future_predictions = []
 # Use the model to make predictions for the next week
-for i in range(0,6):
-    for j in range(1,24):
+for i in range(0,7):
+    for j in range(1,25):
         future_data = pd.DataFrame({'hour': [j], 'day_of_week': [i]})
         future_prediction = model.predict(future_data)
         future_predictions.append(future_prediction[0])
         j += 1
     i += 1
 
-print(f'Predicted occupied spots: {future_predictions.count}')
+print(future_predictions)
+
+with open('future_predictions.json','w') as f:
+    json.dump(future_predictions, f)

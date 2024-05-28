@@ -10,10 +10,12 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
+import io from 'socket.io-client';
 
 function Analytics({isAdmin}){
     const [hourlyAverage, setHourlyAverage] = useState([]);
     const baseUrl = window.location.origin;
+    const serverUrl = 'http://localhost:3000';
 
     useEffect(() => {
         // Fetch the averages from the database. There is no need to use sockets to get this from server. The server does calculations and store it in the database.
@@ -27,6 +29,18 @@ function Analytics({isAdmin}){
             }  
             setHourlyAverage(hourlyAvg);      
         });
+
+        // Get the next week predictions from server
+        const socket = io(serverUrl);
+
+        socket.on('predictions', (predictions) => {
+            console.log("Inside analytics page socket");
+        });
+        
+        // Disconnect the socket at the end of the function call
+        return () => {
+            socket.disconnect();
+        };
     },[]);
 
     // Register all chart.js properties to the Chart object
@@ -77,7 +91,8 @@ function Analytics({isAdmin}){
                     }}
                     options={options}
                 />
-                <h2>Predictions for the next week</h2>
+                <br/>
+                <h1>Predictions for the next week</h1>
                 <p>(Note that the predictions are calculated every Sunday morning)</p>
                 </div>
             )}
