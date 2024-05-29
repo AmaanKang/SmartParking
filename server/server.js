@@ -8,6 +8,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+// Connect to database and set the app to use API endpoints
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URI+'SmartParking', { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log('Connected to MongoDB'))
@@ -27,7 +28,7 @@ let minHour = 0;
 let hourlyAverage = null;
 
 // Setup the job scheduler 
-cron.schedule('0 * * * *', async () => {
+cron.schedule('* * * * *', async () => {
     try {
         console.log('Job run');
         // Fetch parking spots to see how many are occupied at this time
@@ -79,7 +80,7 @@ cron.schedule('0 * * * *', async () => {
 
 
 /**
- * Below code is specially added to assist in the sockets connection
+ * Below code is specially added to assist in the sockets connection with the Map Page
  */
 const faker = require('faker');
 const { fetchAllParkingSpots } = require('./controllers/parkingSpotController');
@@ -130,8 +131,6 @@ io.on('connection', (socket) => {
  */
 const {spawn} = require('child_process');
 port = 3000;
-let predictions = [];
-const fs = require('fs');
 
 // Using the httpServer here and NOT app because the socket io configuration is related to the httpServer
 httpServer.listen(port, () => {
@@ -140,21 +139,10 @@ httpServer.listen(port, () => {
     cron.schedule('* * * * *',() => {
         const python = spawn('python',['predictOccupancy.py']);
         python.stdout.on('data',(data) => {
-            console.log(`stdout: ${data}`);
-            fs.readFile('future_predictions.json', 'utf8', (err, data) => {
-                if(err) {
-                    console.log(err);
-                    return
-                }
-                else{
-                    predictions = JSON.parse(data);
-
-                    // When a client connects from analytics page
-                    io.on('connection', (socket) => {
-                        console.log('A user connected');
-                        socket.emit('predictions',predictions);
-                    });
-                }
+            // When a client connects from analytics page
+            io.on('connection', (socket) => {
+                console.log('A user connected');
+                socket.emit('predictionsUpdated','Predictions updated at - '+ Date.now());
             });
         });
         python.stderr.on('data',(data) => {
