@@ -27,7 +27,7 @@ let maxHour = 0;
 let minHour = 0;
 let hourlyAverage = null;
 
-// Setup the job scheduler 
+// Setup the job scheduler for getting current hour's spots and calculate avergage for the current hour
 cron.schedule('* * * * *', async () => {
     try {
         console.log('Job run');
@@ -97,6 +97,8 @@ const io = socketIo(httpServer,{
       }
 });
 
+let predictions;
+
 // When a client connects
 io.on('connection', (socket) => {
     console.log('A user connected');
@@ -124,6 +126,11 @@ io.on('connection', (socket) => {
             console.log(err);
         }
     }, 60000);
+
+    // This is for the analytics page
+    if (predictions){
+        socket.emit('predictionsUpdated',predictions);
+    }
 });
 
 /** 
@@ -140,10 +147,9 @@ httpServer.listen(port, () => {
         const python = spawn('python',['predictOccupancy.py']);
         python.stdout.on('data',(data) => {
             // When a client connects from analytics page
-            io.on('connection', (socket) => {
-                console.log('A user connected');
-                socket.emit('predictionsUpdated','Predictions updated at - '+ Date.now());
-            });
+            predictions = 'Predictions updated at - '+ new Date();
+            io.emit('predictionsUpdated', predictions);
+            
         });
         python.stderr.on('data',(data) => {
             console.log(`stderr: ${data}`);
