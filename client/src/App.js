@@ -24,7 +24,7 @@ const auth = getAuth(app);
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // When the user logs in logs out, switch the isAdmin boolean
+  // When the user logs in or logs out, switch the isAdmin boolean
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {

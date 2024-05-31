@@ -143,13 +143,13 @@ port = 3000;
 httpServer.listen(port, () => {
     console.log('Server is running on port 3000');
 
-    cron.schedule('* * * * *',() => {
+    // Calculate the predictions every Sunday at 6 am
+    cron.schedule('0 6 * * 0',() => {
         const python = spawn('python',['predictOccupancy.py']);
         python.stdout.on('data',(data) => {
-            // When a client connects from analytics page
+            // When a client connects from analytics page and predictions have been calculated
             predictions = 'Predictions updated at - '+ new Date();
             io.emit('predictionsUpdated', predictions);
-            
         });
         python.stderr.on('data',(data) => {
             console.log(`stderr: ${data}`);

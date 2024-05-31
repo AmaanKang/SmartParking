@@ -21,7 +21,7 @@ function Analytics({isAdmin}){
 
     useEffect(() => {
         // Fetch the averages from the database. There is no need to use sockets to get this from server. The server does calculations and store it in the database.
-        fetch('http://localhost:3000/api/parking-spots/admin/analytics')
+        fetch(serverUrl + '/api/parking-spots/admin/analytics')
         .then(response => response.json())
         .then(data => {
             const analytics = data[7];
@@ -34,7 +34,7 @@ function Analytics({isAdmin}){
 
         
         // Fetch the endpoint to access the future predictions json data
-        fetch('http://localhost:3000/api/parking-spots/admin/predictions')
+        fetch(serverUrl + '/api/parking-spots/admin/predictions')
         .then(response => response.json())
         .then(data => {
             setPredictions(data);
@@ -78,7 +78,11 @@ function Analytics({isAdmin}){
     return (
         <div className='analytics-page'>
              <h1>Parking Lot Analytics</h1>
-            {(isAdmin) && (
+            {/**
+             * If the admin is logged in, show the current week statistics and the next week predictions for the occupied spots in parking lot
+             * Display two different graphs
+             */
+            (isAdmin) && (
                 <div>
                 <div className='home-link'>
                 <a href={baseUrl}>Go to Home</a>

@@ -7,7 +7,6 @@ from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 import json
-
 load_dotenv()
 
 # Create a connection to the MongoDB database
@@ -55,7 +54,6 @@ joblib.dump(model,model_file)
 # Evaluate the model
 predictions = model.predict(X_test)
 mae = mean_absolute_error(y_test, predictions)
-print(f'Mean Absolute Error: {mae}')
 
 future_predictions = []
 # Use the model to make predictions for the next week
@@ -67,7 +65,6 @@ for i in range(0,7):
         j += 1
     i += 1
 
-print(future_predictions)
-
+# Save the predictions data for 168 indexes in the json file
 with open('future_predictions.json','w') as f:
     json.dump(future_predictions, f)

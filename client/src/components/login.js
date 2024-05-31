@@ -28,19 +28,7 @@ function Login({onAuth}){
             return false;
         }
     }
-
-    /** In case the user directly accesses the login page, check the login status
-     * useEffect(() => {
-        const unsubscribe = onAuthStateChanged(onAuth, (user) => {
-          if (user) {
-            navigate('/home');
-          }
-        });
     
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
-      },[onAuth,navigate])*/
-
     return(
         <div className='login-page'>
             <h1>Login as Admin</h1>
