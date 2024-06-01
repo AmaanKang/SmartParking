@@ -14,7 +14,8 @@ The driver can decide to view the available parking on their own through app or 
 ![image](https://github.com/AmaanKang/SmartParking/assets/77933148/b99cada4-221a-4f10-ad35-1a5763f6a558)
 
 - This provides admins an extra button on the home page to view the parking spot analytics. The analytics include graphical view of the average occupied spots per hour in last week. There is also another graph that predicts as how busy the parking lot will be in next week. This is based on a python script running in background every Sunday at 6 am. The python script is running an ML model that gathers data every week and trains iteself. This model makes the prediction about next week.
-![image](https://github.com/AmaanKang/SmartParking/assets/77933148/735ca38f-a6e6-4967-b33c-a5c9abd5ddf4)
+![image](https://github.com/AmaanKang/SmartParking/assets/77933148/976c0a89-31e4-4bf9-90fb-af7380ebf7cf)
+
 
 - The admins can also see four different buttons on the Map Page. These buttons assist them in adding new parking spot, deleting a current parking spot, updating the status of the free/occupied spot and changing the entrance of the parking lot since the suggested parking spot is based on entrance distance.
 ![image](https://github.com/AmaanKang/SmartParking/assets/77933148/a80be47d-7513-428b-8b53-371536bacd0b)
