@@ -4,8 +4,6 @@ const fs = require('fs');
 const { getAllParkingSpots, addParkingSpot, removeParkingSpot, updateParkingSpot } = require('../controllers/parkingSpotController');
 const { getAllBookings, addBooking, getOneBooking } = require('../controllers/bookingController');
 const { getWeeklyData } = require('../controllers/weeklyDataController');
-const isAdmin = require('./middleware');
-const ParkingSpot = require('../models/parkingSpot');
 
 // Route to get all parking spots
 router.get('/', getAllParkingSpots);
